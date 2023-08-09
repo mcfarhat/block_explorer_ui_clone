@@ -108,6 +108,8 @@ staging:deploy:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual
+    - if: $CI_COMMIT_BRANCH == 'kbotor/19-dockerisation-deployment-ci'
+      when: manual
   tags:
     - hs-bexplorer
 
@@ -125,6 +127,8 @@ staging:stop:
     action: stop
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: manual
+    - if: $CI_COMMIT_BRANCH == 'kbotor/19-dockerisation-deployment-ci'
       when: manual
   tags:
     - hs-bexplorer
