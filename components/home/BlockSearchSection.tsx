@@ -42,6 +42,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [selectedOperationTypes, setSelectedOperationTypes] = useState<number[]>([]);
   const [fieldContent, setFieldContent] = useState<string | null>(null);
   const [permlink, setPermlink] = useState<string | undefined>(undefined);
+  const [accordionValue, setAccordionValue] = useState<string>("");
 
   const startSearch = () => {
     const blockSearchProps: Explorer.BlockSearchProps = {
@@ -129,7 +130,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
             />
           </div>
         </div>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full" value={accordionValue} onValueChange={setAccordionValue}>
           <AccordionItem value="advanced">
             <AccordionTrigger>Advanced search</AccordionTrigger>
             <AccordionContent>
