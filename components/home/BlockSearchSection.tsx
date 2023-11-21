@@ -10,6 +10,7 @@ import Link from "next/link";
 import { Select, SelectContent, SelectTrigger, SelectItem } from "../ui/select";
 import { Loader2, X } from "lucide-react";
 import SingleOperationTypeDialog from "../SingleOperationTypeDialog";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 
 
 interface BlockSearchSectionProps {
@@ -40,6 +41,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [toBlock, setToBlock] = useState<number | undefined>(undefined);
   const [selectedOperationTypes, setSelectedOperationTypes] = useState<number[]>([]);
   const [fieldContent, setFieldContent] = useState<string | null>(null);
+  const [permlink, setPermlink] = useState<string | undefined>(undefined);
 
   const startSearch = () => {
     const blockSearchProps: Explorer.BlockSearchProps = {
@@ -127,9 +129,13 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
             />
           </div>
         </div>
-          <div className="flex flex-col  m-2">
-            <label className="mx-2">Key</label>
-            <div className="flex">
+        <Accordion type="single" collapsible className="w-full">
+          <AccordionItem value="advanced">
+            <AccordionTrigger>Advanced search</AccordionTrigger>
+            <AccordionContent>
+            <div className="flex flex-col  m-2">
+              <label className="mx-2">Key</label>
+              <div className="flex">
 
               <Select onValueChange={onSelect}>
                 <SelectTrigger className="justify-normal" disabled={!selectedOperationTypes || selectedOperationTypes.length !== 1}>
@@ -168,6 +174,25 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
               disabled={!selectedOperationTypes || selectedOperationTypes.length !== 1}
             />     
           </div>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="comment">
+              <AccordionTrigger>Comment search</AccordionTrigger>
+              <AccordionContent>
+                <div className="flex m-2 flex-col">
+                  <label className="mx-2">Permlink</label>
+                  <Input
+                    className="w-full"
+                    type="text"
+                    value={permlink}
+                    onChange={(e) => setPermlink(e.target.value)}
+                    placeholder="---"
+                  />     
+                </div>
+              </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
         <div className="flex items-center  m-2">
           <Button className=" bg-blue-800 hover:bg-blue-600 rounded-[4px]" onClick={startSearch} disabled={!selectedOperationTypes.length}>
             <span>Search</span> {loading && <Loader2 className="animate-spin mt-1 h-4 w-4 ml-3 ..." />}
