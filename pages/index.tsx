@@ -14,8 +14,8 @@ import LastBlocksWidget from "@/components/LastBlocksWidget";
 
 export default function Home() {
   const [foundBlocksIds, setFoundBlocksIds] = useState<number[] | null>(null);
-  const [selectedKeys, setSelectedKeys] = useState<string[] | null>(
-    null
+  const [selectedKeys, setSelectedKeys] = useState<string[] | undefined>(
+    undefined
   );
   const [operationKeys, setOperationKeys] = useState<
     string[][] | null
@@ -108,10 +108,10 @@ export default function Home() {
         operationTypeId
       );
       setOperationKeys(nextKeys);
-      setSelectedKeys(null);
+      setSelectedKeys(undefined);
     } else {
       setOperationKeys(null);
-      setSelectedKeys(null);
+      setSelectedKeys(undefined);
     }
   };
 
@@ -119,7 +119,7 @@ export default function Home() {
     if (index !== null && operationKeys?.[index]) {
       setSelectedKeys(operationKeys[index]);
     } else {
-      setSelectedKeys(null);
+      setSelectedKeys(undefined);
     }
   }
 

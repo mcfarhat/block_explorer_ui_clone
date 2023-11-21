@@ -46,8 +46,8 @@ declare module Explorer {
     toBlock?: number;
     limit: number;
     deepProps: {
-      content: any;
-      keys: string[] | null;
+      content?: any;
+      keys?: string[];
     }
   }
 }

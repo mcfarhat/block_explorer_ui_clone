@@ -20,7 +20,7 @@ interface BlockSearchSectionProps {
   operationsTypes: Hive.OperationPattern[];
   foundBlocksIds: number[] | null;
   currentOperationKeys: string[][] | null;
-  operationKeysChain: string[] | null;
+  operationKeysChain?: string[];
   loading: boolean;
 }
 
@@ -40,30 +40,34 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [fromBlock, setFromBlock] = useState<number | undefined>(undefined);
   const [toBlock, setToBlock] = useState<number | undefined>(undefined);
   const [selectedOperationTypes, setSelectedOperationTypes] = useState<number[]>([]);
-  const [fieldContent, setFieldContent] = useState<string | null>(null);
+  const [fieldContent, setFieldContent] = useState<string | undefined>(undefined);
   const [permlink, setPermlink] = useState<string | undefined>(undefined);
   const [accordionValue, setAccordionValue] = useState<string>("");
 
   const startSearch = () => {
-    const blockSearchProps: Explorer.BlockSearchProps = {
-      accountName,
-      operations: selectedOperationTypes.length ? selectedOperationTypes : [],
-      fromBlock,
-      toBlock,
-      limit: 100,
-      deepProps: {
-        keys: operationKeysChain,
-        content: fieldContent
+    if (accordionValue === "comment") {
+
+    } else {
+      const blockSearchProps: Explorer.BlockSearchProps = {
+        accountName,
+        operations: selectedOperationTypes.length ? selectedOperationTypes : [],
+        fromBlock,
+        toBlock,
+        limit: 100,
+        deepProps: {
+          keys: operationKeysChain,
+          content: fieldContent
+        }
       }
+      getBlockDataForSearch(blockSearchProps);
     }
-    getBlockDataForSearch(blockSearchProps);
   }
 
   const changeSelectedOperationTypes = (operationTypesIds: number[]) => {
     if (operationTypesIds.length === 1) {
       getOperationKeys(operationTypesIds[0]);
     } else {
-      setFieldContent(null);
+      setFieldContent(undefined);
       getOperationKeys(null);
     }
     setSelectedOperationTypes(operationTypesIds);
@@ -158,7 +162,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
                   ))}
                 </SelectContent>
               </Select>
-              {currentOperationKeys && !!currentOperationKeys.length &&
+              {operationKeysChain && !!operationKeysChain.length &&
               
                 <Button onClick={() => {setSelectedKeys(null)}}>Clear</Button>
               }
