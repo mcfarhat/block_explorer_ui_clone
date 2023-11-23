@@ -21,7 +21,7 @@ export default function Home() {
     string[][] | null
   >(null);
   const [blockSearchLoading, setBlochSearchLoading] = useState<boolean>(false);
-  const [foundOperations, setFoundOperations] = useState<Hive.Operation[] | null>(null);
+  const [foundOperations, setFoundOperations] = useState<Hive.CommentOperationResponse[] | null>(null);
 
   function getGlobalBlockData() {
     return Promise.all([
@@ -147,6 +147,7 @@ export default function Home() {
           setSelectedKeys={setProperKeysForProperty}
           operationsTypes={operationsTypes.data || []}
           foundBlocksIds={foundBlocksIds}
+          foundOperations={foundOperations}
           currentOperationKeys={operationKeys}
           operationKeysChain={selectedKeys}
           loading={blockSearchLoading}

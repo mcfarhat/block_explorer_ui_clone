@@ -277,7 +277,7 @@ class FetchingService {
 
   async getCommentOperation(
     commentSearchProps: Explorer.CommentSearchProps
-  ): Promise<Hive.Operation[]> {
+  ): Promise<Hive.CommentOperationResponse[]> {
     const requestBody: Hive.GetCommentOperationProps = {
       _author: commentSearchProps.accountName,
       _permlink: commentSearchProps.permlink,

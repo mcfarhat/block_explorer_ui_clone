@@ -475,6 +475,15 @@ declare module Hive {
       op_type_id: number;
     }>;
   }
+
+  interface CommentOperationResponse {
+    block_num: number;
+    body: Operation;
+    is_modified: boolean;
+    operation_id: number;
+    permlink: string;
+
+  }
 }
 
 export default Hive;

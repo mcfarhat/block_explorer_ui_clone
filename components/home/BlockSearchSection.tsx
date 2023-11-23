@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectTrigger, SelectItem } from "../ui/select";
 import { Loader2, X } from "lucide-react";
 import SingleOperationTypeDialog from "../SingleOperationTypeDialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import DetailedOperationCard from "../DetailedOperationCard";
 
 
 interface BlockSearchSectionProps {
@@ -19,6 +20,7 @@ interface BlockSearchSectionProps {
   setSelectedKeys: (index: number| null) => void;
   operationsTypes: Hive.OperationPattern[];
   foundBlocksIds: number[] | null;
+  foundOperations: Hive.CommentOperationResponse[] | null;
   currentOperationKeys: string[][] | null;
   operationKeysChain?: string[];
   loading: boolean;
@@ -31,6 +33,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   setSelectedKeys,
   operationsTypes, 
   foundBlocksIds, 
+  foundOperations,
   currentOperationKeys, 
   operationKeysChain,
   loading,
@@ -227,6 +230,14 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
           
         </div>
       )}
+      {!!foundOperations &&
+        <div>
+          {foundOperations.map((foundOperation) => (
+
+            <DetailedOperationCard operation={foundOperation.body} key={foundOperation.operation_id} blockNumber={foundOperation.block_num} />
+          ))}
+        </div>
+      }
     </div>
   )        
 }
