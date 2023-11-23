@@ -14,7 +14,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "..
 
 
 interface BlockSearchSectionProps {
-  getBlockDataForSearch: (blockSearchProps: Explorer.BlockSearchProps) => void;
+  getBlockDataForSearch: (blockSearchProps?: Explorer.BlockSearchProps, commentSearchProps?: Explorer.CommentSearchProps) => void;
   getOperationKeys: (operationId: number | null) => void;
   setSelectedKeys: (index: number| null) => void;
   operationsTypes: Hive.OperationPattern[];
@@ -45,8 +45,14 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [accordionValue, setAccordionValue] = useState<string>("");
 
   const startSearch = () => {
-    if (accordionValue === "comment") {
-
+    if (accordionValue === "comment" && accountName) {
+      const commentSearchProps: Explorer.CommentSearchProps = {
+        accountName,
+        permlink,
+        fromBlock,
+        toBlock
+      };
+      getBlockDataForSearch(undefined, commentSearchProps);
     } else {
       const blockSearchProps: Explorer.BlockSearchProps = {
         accountName,
