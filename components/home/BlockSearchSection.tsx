@@ -12,6 +12,7 @@ import { Loader2, X } from "lucide-react";
 import SingleOperationTypeDialog from "../SingleOperationTypeDialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import DetailedOperationCard from "../DetailedOperationCard";
+import { config } from "@/Config";
 
 
 interface BlockSearchSectionProps {
@@ -43,6 +44,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [fromBlock, setFromBlock] = useState<number | undefined>(undefined);
   const [toBlock, setToBlock] = useState<number | undefined>(undefined);
   const [selectedOperationTypes, setSelectedOperationTypes] = useState<number[]>([]);
+  const [selectedCommentSearchOperationTypes, setSelectedCommentSearchOperationTypes] = useState<number[]>([]);
   const [fieldContent, setFieldContent] = useState<string | undefined>(undefined);
   const [permlink, setPermlink] = useState<string | undefined>(undefined);
   const [accordionValue, setAccordionValue] = useState<string>("block");
@@ -201,6 +203,15 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
           <AccordionItem value="comment">
             <AccordionTrigger>Comment search</AccordionTrigger>
             <AccordionContent>
+              <div className="flex items-center m-2">
+                <OperationTypesDialog
+                  operationTypes={operationsTypes.filter((opType) => config.commentOperationsTypeIds.includes(opType.op_type_id))}
+                  selectedOperations={selectedCommentSearchOperationTypes}
+                  setSelectedOperations={setSelectedCommentSearchOperationTypes}
+                  colorClass="bg-gray-500"
+                  triggerTitle={getOperationButtonTitle()}
+                />
+              </div>
               <div className="flex flex-col m-2">
                 <label className="mx-2">Account name</label>
                 <Input
