@@ -17,7 +17,7 @@ import DetailedOperationCard from "../DetailedOperationCard";
 interface BlockSearchSectionProps {
   getBlockDataForSearch: (blockSearchProps?: Explorer.BlockSearchProps, commentSearchProps?: Explorer.CommentSearchProps) => void;
   getOperationKeys: (operationId: number | null) => void;
-  setSelectedKeys: (index: number| null) => void;
+  setSelectedKeys: (index: number | null) => void;
   operationsTypes: Hive.OperationPattern[];
   foundBlocksIds: number[] | null;
   foundOperations: Hive.CommentOperationResponse[] | null;
@@ -28,13 +28,13 @@ interface BlockSearchSectionProps {
 
 
 const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
-  getBlockDataForSearch, 
-  getOperationKeys, 
+  getBlockDataForSearch,
+  getOperationKeys,
   setSelectedKeys,
-  operationsTypes, 
-  foundBlocksIds, 
+  operationsTypes,
+  foundBlocksIds,
   foundOperations,
-  currentOperationKeys, 
+  currentOperationKeys,
   operationKeysChain,
   loading,
 }) => {
@@ -45,7 +45,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [selectedOperationTypes, setSelectedOperationTypes] = useState<number[]>([]);
   const [fieldContent, setFieldContent] = useState<string | undefined>(undefined);
   const [permlink, setPermlink] = useState<string | undefined>(undefined);
-  const [accordionValue, setAccordionValue] = useState<string>("");
+  const [accordionValue, setAccordionValue] = useState<string>("block");
 
   const startSearch = () => {
     if (accordionValue === "comment" && accountName) {
@@ -90,7 +90,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
     if (selectedOperationTypes && selectedOperationTypes.length === 1) return operationsTypes[selectedOperationTypes[0]].operation_name
     if (selectedOperationTypes && selectedOperationTypes.length > 1) return `${selectedOperationTypes.length} operations`
     return "Operations"
-  } 
+  }
 
   const setNumericValue = (value: number, fieldSetter: Function) => {
     if (value === 0) {
@@ -100,110 +100,148 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
     }
   }
 
-  return(
+  return (
     <div className='mt-6 col-start-1 col-span-4 md:col-span-1 mb-6 md:mb-0'>
       <div className=' bg-explorer-dark-gray p-2 rounded-["6px] h-fit rounded'>
-      <div className="text-center text-xl">Block Search</div>
-        <div className="flex items-center m-2">
-          <OperationTypesDialog 
-            operationTypes={operationsTypes} 
-            selectedOperations={selectedOperationTypes} 
-            setSelectedOperations={changeSelectedOperationTypes} 
-            colorClass="bg-gray-500"
-            triggerTitle={getOperationButtonTitle()} 
-          />   
-        </div>
-        <div className="flex flex-col m-2">
-          <label className="mx-2">Account name</label>      
-          <Input
-            className="w-1/2"
-            type="text"
-            value={accountName || ""}
-            onChange={(e) => setAccountName(e.target.value === "" ? undefined : e.target.value)}
-            placeholder="---"
-          />
-        </div>
-        <div className="flex items-center  m-2">
-          <div className="flex flex-col w-full">
-            <label className="mx-2">From block</label>
-            <Input
-              type="number"
-              value={fromBlock || ""}
-              onChange={(e) => setNumericValue(Number(e.target.value), setFromBlock)}
-              placeholder="1"
-            />
-          </div>
-          <div className="flex flex-col w-full">
-            <label className="mx-2">To block</label>
-            <Input
-              type="number"
-              value={toBlock || ""}
-              onChange={(e) => setNumericValue(Number(e.target.value), setToBlock)}
-              placeholder={"Headblock"}
-            />
-          </div>
-        </div>
-        <Accordion type="single" collapsible className="w-full" value={accordionValue} onValueChange={setAccordionValue}>
-          <AccordionItem value="advanced">
-            <AccordionTrigger>Advanced search</AccordionTrigger>
+        <div className="text-center text-xl">Block Search</div>
+        <Accordion type="single" className="w-full" value={accordionValue} onValueChange={setAccordionValue}>
+          <AccordionItem value="block">
+            <AccordionTrigger>Block Search</AccordionTrigger>
             <AccordionContent>
-            <div className="flex flex-col  m-2">
-              <label className="mx-2">Key</label>
-              <div className="flex">
+              <div className="flex items-center m-2">
+                <OperationTypesDialog
+                  operationTypes={operationsTypes}
+                  selectedOperations={selectedOperationTypes}
+                  setSelectedOperations={changeSelectedOperationTypes}
+                  colorClass="bg-gray-500"
+                  triggerTitle={getOperationButtonTitle()}
+                />
+              </div>
+              <div className="flex flex-col m-2">
+                <label className="mx-2">Account name</label>
+                <Input
+                  className="w-1/2"
+                  type="text"
+                  value={accountName || ""}
+                  onChange={(e) => setAccountName(e.target.value === "" ? undefined : e.target.value)}
+                  placeholder="---"
+                />
+              </div>
+              <div className="flex items-center  m-2">
+                <div className="flex flex-col w-full">
+                  <label className="mx-2">From block</label>
+                  <Input
+                    type="number"
+                    value={fromBlock || ""}
+                    onChange={(e) => setNumericValue(Number(e.target.value), setFromBlock)}
+                    placeholder="1"
+                  />
+                </div>
+                <div className="flex flex-col w-full">
+                  <label className="mx-2">To block</label>
+                  <Input
+                    type="number"
+                    value={toBlock || ""}
+                    onChange={(e) => setNumericValue(Number(e.target.value), setToBlock)}
+                    placeholder={"Headblock"}
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col  m-2">
+                <label className="mx-2">Key</label>
+                <div className="flex">
 
-              <Select onValueChange={onSelect}>
-                <SelectTrigger className="justify-normal" disabled={!selectedOperationTypes || selectedOperationTypes.length !== 1}>
-                  {(operationKeysChain && !!operationKeysChain.length) ? operationKeysChain.map((key, index) => ( key !== "value" &&
-                  <div key={key} className={"mx-1"}>{index !== 1 && "/"} {key}</div>
-                  )) : (
-                    <div className="text-blocked">{!selectedOperationTypes || selectedOperationTypes.length !== 1 ? "Select exactly 1 operation to use key-value search" : "Pick a property"} </div>
-                  )}
-                </SelectTrigger>
-                <SelectContent className="bg-white text-black rounded-[2px] max-h-[31rem] overflow-y-scroll">
-                  {currentOperationKeys?.map((keys, index) => (
-                    <SelectItem className="m-1 text-center" key={index} value={index.toFixed(0)} defaultChecked={false} >
-                      <div className="flex gap-x-2">
-                        {keys.map((key, index) => ( key !== "value" && 
-                          <div key={key}>{index !== 1 && "/"} {key} </div>
-                        ))}
-                      </div>
-                  </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {operationKeysChain && !!operationKeysChain.length &&
-              
-                <Button onClick={() => {setSelectedKeys(null)}}>Clear</Button>
-              }
-            </div>
-          </div>
-          <div className="flex m-2 flex-col">
-            <label className="mx-2">Value</label>
-            <Input
-              className="w-1/2"
-              type="text"
-              value={fieldContent || ""}
-              onChange={(e) => setFieldContent(e.target.value)}
-              placeholder="---"
-              disabled={!selectedOperationTypes || selectedOperationTypes.length !== 1}
-            />     
-          </div>
+                  <Select onValueChange={onSelect}>
+                    <SelectTrigger className="justify-normal" disabled={!selectedOperationTypes || selectedOperationTypes.length !== 1}>
+                      {(operationKeysChain && !!operationKeysChain.length) ? operationKeysChain.map((key, index) => (key !== "value" &&
+                        <div key={key} className={"mx-1"}>{index !== 1 && "/"} {key}</div>
+                      )) : (
+                        <div className="text-blocked">{!selectedOperationTypes || selectedOperationTypes.length !== 1 ? "Select exactly 1 operation to use key-value search" : "Pick a property"} </div>
+                      )}
+                    </SelectTrigger>
+                    <SelectContent className="bg-white text-black rounded-[2px] max-h-[31rem] overflow-y-scroll">
+                      {currentOperationKeys?.map((keys, index) => (
+                        <SelectItem className="m-1 text-center" key={index} value={index.toFixed(0)} defaultChecked={false} >
+                          <div className="flex gap-x-2">
+                            {keys.map((key, index) => (key !== "value" &&
+                              <div key={key}>{index !== 1 && "/"} {key} </div>
+                            ))}
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {operationKeysChain && !!operationKeysChain.length &&
+
+                    <Button onClick={() => { setSelectedKeys(null) }}>Clear</Button>
+                  }
+                </div>
+              </div>
+              <div className="flex m-2 flex-col">
+                <label className="mx-2">Value</label>
+                <Input
+                  className="w-1/2"
+                  type="text"
+                  value={fieldContent || ""}
+                  onChange={(e) => setFieldContent(e.target.value)}
+                  placeholder="---"
+                  disabled={!selectedOperationTypes || selectedOperationTypes.length !== 1}
+                />
+              </div>
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="account">
+            <AccordionTrigger>Account search</AccordionTrigger>
+            <AccordionContent>
+              <div className="flex m-2 flex-col">
+                Coming soon
+              </div>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="comment">
-              <AccordionTrigger>Comment search</AccordionTrigger>
-              <AccordionContent>
-                <div className="flex m-2 flex-col">
-                  <label className="mx-2">Permlink</label>
+            <AccordionTrigger>Comment search</AccordionTrigger>
+            <AccordionContent>
+              <div className="flex flex-col m-2">
+                <label className="mx-2">Account name</label>
+                <Input
+                  className="w-1/2"
+                  type="text"
+                  value={accountName || ""}
+                  onChange={(e) => setAccountName(e.target.value === "" ? undefined : e.target.value)}
+                  placeholder="---"
+                />
+              </div>
+              <div className="flex m-2 flex-col">
+                <label className="mx-2">Permlink</label>
+                <Input
+                  className="w-full"
+                  type="text"
+                  value={permlink}
+                  onChange={(e) => setPermlink(e.target.value)}
+                  placeholder="---"
+                />
+              </div>
+              <div className="flex items-center  m-2">
+                <div className="flex flex-col w-full">
+                  <label className="mx-2">From block</label>
                   <Input
-                    className="w-full"
-                    type="text"
-                    value={permlink}
-                    onChange={(e) => setPermlink(e.target.value)}
-                    placeholder="---"
-                  />     
+                    type="number"
+                    value={fromBlock || ""}
+                    onChange={(e) => setNumericValue(Number(e.target.value), setFromBlock)}
+                    placeholder="1"
+                  />
                 </div>
-              </AccordionContent>
+                <div className="flex flex-col w-full">
+                  <label className="mx-2">To block</label>
+                  <Input
+                    type="number"
+                    value={toBlock || ""}
+                    onChange={(e) => setNumericValue(Number(e.target.value), setToBlock)}
+                    placeholder={"Headblock"}
+                  />
+                </div>
+              </div>
+            </AccordionContent>
           </AccordionItem>
         </Accordion>
 
@@ -227,7 +265,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
               <div className="flex justify-center w-full my-2">No blocks matching given criteria</div>
             )}
           </div>
-          
+
         </div>
       )}
       {!!foundOperations &&
@@ -239,7 +277,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
         </div>
       }
     </div>
-  )        
+  )
 }
 
 export default BlockSearchSection
