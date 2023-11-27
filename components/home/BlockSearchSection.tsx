@@ -13,6 +13,7 @@ import SingleOperationTypeDialog from "../SingleOperationTypeDialog";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
 import DetailedOperationCard from "../DetailedOperationCard";
 import { config } from "@/Config";
+import CustomPagination from "../CustomPagination";
 
 
 interface BlockSearchSectionProps {
@@ -48,6 +49,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [fieldContent, setFieldContent] = useState<string | undefined>(undefined);
   const [permlink, setPermlink] = useState<string | undefined>(undefined);
   const [accordionValue, setAccordionValue] = useState<string>("block");
+  const [commentPaginationPage, setCommentPaginationPage] = useState<number>(1);
 
   const startCommentSearch = () => {
     if (accountName) {
@@ -289,6 +291,13 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
       )}
       {!!foundOperations?.operations_result &&
         <div>
+          <CustomPagination
+            currentPage={commentPaginationPage}
+            totalCount={foundOperations?.operations_count[0].total_operations}
+            pageSize={100}
+            onPageChange={() => {}}
+
+          />
           {foundOperations?.operations_result.map((foundOperation) => (
 
             <DetailedOperationCard className="my-6" operation={foundOperation.body} key={foundOperation.operation_id} blockNumber={foundOperation.block_num} />
