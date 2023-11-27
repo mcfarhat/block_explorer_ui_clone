@@ -49,8 +49,8 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [permlink, setPermlink] = useState<string | undefined>(undefined);
   const [accordionValue, setAccordionValue] = useState<string>("block");
 
-  const startSearch = () => {
-    if (accordionValue === "comment" && accountName) {
+  const startCommentSearch = () => {
+    if (accountName) {
       const commentSearchProps: Explorer.CommentSearchProps = {
         accountName,
         permlink,
@@ -58,20 +58,22 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
         toBlock
       };
       getBlockDataForSearch(undefined, commentSearchProps);
-    } else {
-      const blockSearchProps: Explorer.BlockSearchProps = {
-        accountName,
-        operations: selectedOperationTypes.length ? selectedOperationTypes : [],
-        fromBlock,
-        toBlock,
-        limit: 100,
-        deepProps: {
-          keys: operationKeysChain,
-          content: fieldContent
-        }
-      }
-      getBlockDataForSearch(blockSearchProps);
     }
+  }
+
+  const startBlockSearch = () => {
+    const blockSearchProps: Explorer.BlockSearchProps = {
+      accountName,
+      operations: selectedOperationTypes.length ? selectedOperationTypes : [],
+      fromBlock,
+      toBlock,
+      limit: 100,
+      deepProps: {
+        keys: operationKeysChain,
+        content: fieldContent
+      }
+    }
+    getBlockDataForSearch(blockSearchProps);
   }
 
   const changeSelectedOperationTypes = (operationTypesIds: number[]) => {
@@ -190,6 +192,12 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
                   disabled={!selectedOperationTypes || selectedOperationTypes.length !== 1}
                 />
               </div>
+              <div className="flex items-center  m-2">
+                <Button className=" bg-blue-800 hover:bg-blue-600 rounded-[4px]" onClick={startBlockSearch} disabled={!selectedOperationTypes.length}>
+                  <span>Search</span> {loading && <Loader2 className="animate-spin mt-1 h-4 w-4 ml-3 ..." />}
+                </Button>
+                {!selectedOperationTypes.length && <label className="ml-2 text-muted-foreground">Pick operation type</label>}
+              </div>
             </AccordionContent>
           </AccordionItem>
           <AccordionItem value="account">
@@ -253,16 +261,15 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
                   />
                 </div>
               </div>
+              <div className="flex items-center  m-2">
+                <Button className=" bg-blue-800 hover:bg-blue-600 rounded-[4px]" onClick={startCommentSearch} disabled={!accountName}>
+                  <span>Search</span> {loading && <Loader2 className="animate-spin mt-1 h-4 w-4 ml-3 ..." />}
+                </Button>
+                {!accountName && <label className="ml-2 text-muted-foreground">Set account name</label>}
+              </div>
             </AccordionContent>
           </AccordionItem>
         </Accordion>
-
-        <div className="flex items-center  m-2">
-          <Button className=" bg-blue-800 hover:bg-blue-600 rounded-[4px]" onClick={startSearch} disabled={!selectedOperationTypes.length}>
-            <span>Search</span> {loading && <Loader2 className="animate-spin mt-1 h-4 w-4 ml-3 ..." />}
-          </Button>
-          {!selectedOperationTypes.length && <label className="ml-2 text-muted-foreground">Pick operation type</label>}
-        </div>
       </div>
       {foundBlocksIds && (
         <div className=' bg-explorer-dark-gray p-2 rounded-["6px] md:mx-2 h-fit rounded mt-4'>
