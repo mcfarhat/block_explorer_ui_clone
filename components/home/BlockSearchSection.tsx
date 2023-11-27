@@ -237,7 +237,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
                   className="w-full"
                   type="text"
                   value={permlink}
-                  onChange={(e) => setPermlink(e.target.value)}
+                  onChange={(e) => setPermlink(e.target.value === "" ? undefined : e.target.value)}
                   placeholder="---"
                 />
               </div>
@@ -291,7 +291,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
         <div>
           {foundOperations?.operations_result.map((foundOperation) => (
 
-            <DetailedOperationCard operation={foundOperation.body} key={foundOperation.operation_id} blockNumber={foundOperation.block_num} />
+            <DetailedOperationCard className="my-6" operation={foundOperation.body} key={foundOperation.operation_id} blockNumber={foundOperation.block_num} />
           ))}
         </div>
       }
