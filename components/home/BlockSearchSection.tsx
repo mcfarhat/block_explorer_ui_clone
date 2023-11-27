@@ -21,7 +21,7 @@ interface BlockSearchSectionProps {
   setSelectedKeys: (index: number | null) => void;
   operationsTypes: Hive.OperationPattern[];
   foundBlocksIds: number[] | null;
-  foundOperations: Hive.CommentOperationResponse[] | null;
+  foundOperations: Hive.CommentOperationResponse | null;
   currentOperationKeys: string[][] | null;
   operationKeysChain?: string[];
   loading: boolean;
@@ -287,9 +287,9 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
 
         </div>
       )}
-      {!!foundOperations &&
+      {!!foundOperations?.operations_result &&
         <div>
-          {foundOperations.map((foundOperation) => (
+          {foundOperations?.operations_result.map((foundOperation) => (
 
             <DetailedOperationCard operation={foundOperation.body} key={foundOperation.operation_id} blockNumber={foundOperation.block_num} />
           ))}

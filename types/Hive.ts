@@ -476,12 +476,25 @@ declare module Hive {
     }>;
   }
 
-  interface CommentOperationResponse {
+  interface OperationsCount {
+    total_operations: number;
+    total_pages: number;
+  }
+
+
+
+  interface CommentOperation {
     block_num: number;
     body: Operation;
     is_modified: boolean;
     operation_id: number;
     permlink: string;
+
+  }
+
+  interface CommentOperationResponse {
+    operations_count: [OperationsCount];
+    operations_result: CommentOperation[];
 
   }
 }

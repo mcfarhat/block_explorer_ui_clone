@@ -277,7 +277,7 @@ class FetchingService {
 
   async getCommentOperation(
     commentSearchProps: Explorer.CommentSearchProps
-  ): Promise<Hive.CommentOperationResponse[]> {
+  ): Promise<Hive.CommentOperationResponse> {
     const requestBody: Hive.GetCommentOperationProps = {
       _author: commentSearchProps.accountName,
       _permlink: commentSearchProps.permlink,
@@ -289,7 +289,7 @@ class FetchingService {
       _end_date: commentSearchProps.endDate,
       _body_limit: config.opsBodyLimit,
     };
-    const url = `${config.apiAdress}/rpc/get_comment_operation`
+    const url = `${config.apiAdress}/rpc/get_comment_operations`
     return await this.makePostRequest(url, requestBody);
   }
 }
