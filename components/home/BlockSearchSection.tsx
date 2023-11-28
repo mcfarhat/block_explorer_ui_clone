@@ -301,14 +301,13 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
       )}
       {!!foundOperations?.operations_result &&
         <div>
-          <div className=' bg-explorer-dark-gray p-2 rounded-["6px] h-fit rounded mt-4'>
+          <div className="text-black mt-6">
 
             <CustomPagination
               currentPage={commentPaginationPage}
               totalCount={foundOperations?.operations_count[0].total_operations}
               pageSize={config.standardPaginationSize}
               onPageChange={changeCommentSearchPagination}
-
             />
           </div>
           {foundOperations?.operations_result.map((foundOperation) => (
