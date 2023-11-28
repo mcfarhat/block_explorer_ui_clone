@@ -49,6 +49,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
   const [fieldContent, setFieldContent] = useState<string | undefined>(undefined);
   const [permlink, setPermlink] = useState<string | undefined>(undefined);
   const [accordionValue, setAccordionValue] = useState<string>("block");
+  const [previousCommentSearchProps, setPreviousCommentSearchProps] = useState<Explorer.CommentSearchProps | undefined>(undefined);
   const [commentPaginationPage, setCommentPaginationPage] = useState<number>(1);
 
   const startCommentSearch = () => {
@@ -60,6 +61,7 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
         toBlock
       };
       getBlockDataForSearch(undefined, commentSearchProps);
+      setPreviousCommentSearchProps(commentSearchProps);
     }
   }
 
@@ -69,13 +71,21 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
       operations: selectedOperationTypes.length ? selectedOperationTypes : [],
       fromBlock,
       toBlock,
-      limit: 100,
+      limit: config.standardPaginationSize,
       deepProps: {
         keys: operationKeysChain,
         content: fieldContent
       }
     }
     getBlockDataForSearch(blockSearchProps);
+  }
+
+  const changeCommentSearchPagination = (newPageNum: number) => {
+    if (previousCommentSearchProps?.accountName) {
+      const newSearchProps: Explorer.CommentSearchProps = {...previousCommentSearchProps, pageNumber: newPageNum};
+      getBlockDataForSearch(undefined, newSearchProps);
+      setCommentPaginationPage(newPageNum);
+    }
   }
 
   const changeSelectedOperationTypes = (operationTypesIds: number[]) => {
@@ -291,13 +301,16 @@ const BlockSearchSection: React.FC<BlockSearchSectionProps> = ({
       )}
       {!!foundOperations?.operations_result &&
         <div>
-          <CustomPagination
-            currentPage={commentPaginationPage}
-            totalCount={foundOperations?.operations_count[0].total_operations}
-            pageSize={100}
-            onPageChange={() => {}}
+          <div className=' bg-explorer-dark-gray p-2 rounded-["6px] h-fit rounded mt-4'>
 
-          />
+            <CustomPagination
+              currentPage={commentPaginationPage}
+              totalCount={foundOperations?.operations_count[0].total_operations}
+              pageSize={config.standardPaginationSize}
+              onPageChange={changeCommentSearchPagination}
+
+            />
+          </div>
           {foundOperations?.operations_result.map((foundOperation) => (
 
             <DetailedOperationCard className="my-6" operation={foundOperation.body} key={foundOperation.operation_id} blockNumber={foundOperation.block_num} />
