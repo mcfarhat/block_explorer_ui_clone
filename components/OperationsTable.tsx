@@ -21,12 +21,6 @@ import { colorByOperationCategory } from "./OperationTypesDialog";
 import { useUserSettingsContext } from "./contexts/UserSettingsContext";
 import TimeAgo from "timeago-react";
 import { formatAndDelocalizeTime } from "@/utils/TimeUtils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "./ui/tooltip";
 
 interface OperationsTableProps {
   operations: Explorer.OperationForTable[];
@@ -81,7 +75,7 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
   className,
 }) => {
   const {
-    settings: { rawJsonView },
+    settings: { rawJsonView, prettyJsonView },
   } = useUserSettingsContext();
 
   const [expanded, setExpanded] = useState<number[]>([]);
@@ -93,11 +87,23 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
     return unformattedOperation ? JSON.stringify(unformattedOperation) : {};
   };
 
-  const renderJsonViewOperation = (operation: Explorer.OperationForTable) => {
+  const renderOperationContent = (
+    rawJsonView: boolean,
+    prettyJsonView: boolean,
+    operation: Explorer.OperationForTable
+  ) => {
+    if (!rawJsonView && !prettyJsonView) {
+      return <div>{getOneLineDescription(operation)}</div>;
+    }
     const unformattedOperation = unformattedOperations?.find(
       (op) => op.operationId === operation.operationId
     )?.operation;
-    return unformattedOperation ? JSON.stringify(unformattedOperation) : null;
+
+    if (prettyJsonView) {
+      return <pre>{JSON.stringify(unformattedOperation, null, 2)}</pre>;
+    } else {
+      return <div>{JSON.stringify(unformattedOperation)}</div>;
+    }
   };
 
   return (
@@ -195,12 +201,10 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
                     {operation.trxId?.slice(0, 10)}
                   </Link>
                 </TableCell>
-                <TableCell>
+                <TableCell className="w-1/5">
                   <TimeAgo
                     datetime={
-                      new Date(
-                        formatAndDelocalizeTime(operation.timestamp)
-                      )
+                      new Date(formatAndDelocalizeTime(operation.timestamp))
                     }
                   />
                 </TableCell>
@@ -215,13 +219,13 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
                   </div>
                 </TableCell>
                 <TableCell
-                  className="md:max-w-0 w-1/2"
+                  className="md:max-w-0 w-full"
                   data-testid="operation-content"
                 >
-                  {rawJsonView ? (
-                    <pre>{renderJsonViewOperation(operation)}</pre>
-                  ) : (
-                    <div>{getOneLineDescription(operation)}</div>
+                  {renderOperationContent(
+                    rawJsonView,
+                    prettyJsonView,
+                    operation
                   )}
                 </TableCell>
               </TableRow>
