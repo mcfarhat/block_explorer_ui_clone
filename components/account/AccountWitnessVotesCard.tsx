@@ -17,6 +17,7 @@ const buildTableBody = (voters: string[]) => {
           className={cn(
             {
               "border-t border-gray-700": !!index,
+              "border-b": index !== voters.length - 1,
             },
             "hover:bg-inherit"
           )}
