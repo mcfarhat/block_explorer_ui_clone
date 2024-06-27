@@ -10,6 +10,7 @@ type AccountWitnessVotesCardProps = {
 };
 
 const buildTableBody = (voters: string[]) => {
+  
   return voters.map((voter: string, index: number) => {
     const isLast = index === voters.length - 1;
     return (
@@ -39,7 +40,11 @@ const buildTableBody = (voters: string[]) => {
 };
 
 const AccountWitnessVotesCard: React.FC<AccountWitnessVotesCardProps> = ({
+<<<<<<< HEAD
   voters: initialVoters,
+=======
+  voters:  initialVoters, 
+>>>>>>> 3c7be08 (sorting added)
 }) => {
   const [isPropertiesHidden, setIsPropertiesHidden] = useState(true);
   const voters = [...initialVoters];
