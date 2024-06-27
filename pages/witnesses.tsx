@@ -42,7 +42,7 @@ export default function Witnesses() {
   return (
     <>
       <Head>
-        <title>Witnesses - Hive Explorer</title>
+        <title>test</title>
       </Head>
       <div className="md:m-8 max-w-[100vw]">
         <VotersDialog
