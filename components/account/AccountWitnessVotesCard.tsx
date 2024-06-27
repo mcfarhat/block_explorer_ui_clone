@@ -17,16 +17,14 @@ const buildTableBody = (voters: string[]) => {
           className={cn(
             {
               "border-t border-gray-700": !!index,
+              "border-b": index !== voters.length-1, // Ensure bottom border except for the last row
             },
             "hover:bg-inherit"
           )}
         >
           <TableCell>{index + 1}</TableCell>
           <TableCell className="text-right">
-            <Link
-              className="text-blue-400"
-              href={`/@${voter}`}
-            >
+            <Link className="text-blue-400" href={`/@${voter}`}>
               {voter}
             </Link>
           </TableCell>
@@ -48,17 +46,13 @@ const AccountWitnessVotesCard: React.FC<AccountWitnessVotesCardProps> = ({
   };
 
   return (
-    <Card
-      data-testid="witness-votes-dropdown"
-      className="overflow-hidden"
-    >
+    <Card data-testid="witness-votes-dropdown" className="overflow-hidden">
       <CardHeader className="p-0">
         <div
           onClick={handlePropertiesVisibility}
           className="h-full flex justify-between align-center p-2 hover:bg-slate-600 cursor-pointer px-4"
         >
           <div className="text-lg">Witness Votes</div>
-
           {isPropertiesHidden ? <ArrowDown /> : <ArrowUp />}
         </div>
       </CardHeader>
