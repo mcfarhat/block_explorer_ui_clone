@@ -36,34 +36,32 @@ interface OperationsTableProps {
 
 const localColors = colorByOperationCategory;
 
-const getOperationColor = (operationType: string) => {
+export const getOperationColor = (operationType: string) => {
   const operationTypeCategories: any = categorizedOperationTypes.find(
     (category) => category.types.includes(operationType)
   );
 
-  const color = localColors[operationTypeCategories.name];
+  const color = localColors[operationTypeCategories?.name];
 
   return color;
 };
 
 const getOneLineDescription = (operation: Explorer.OperationForTable) => {
   const { value } = operation?.operation;
-  if (typeof value === "string" || React.isValidElement(value)) {
-    if (operation.operation.type === "hardfork_operation") {
-      return (
-        <Link
-          className="text-explorer-turquoise"
-          href={`/longOperation/${operation?.operationId}`}
-        >
-          {value}
-        </Link>
-      );
-    } else {
-      return value;
-    }
-  }
+  if (typeof value === "string" || React.isValidElement(value)) return value;
   if (operation.operation.type === "custom_json_operation")
     return value.message;
+  if (operation.operation.type === "body_placeholder_operation") {
+    return (
+      <div className="text-explorer-turquoise">
+        <Link
+          href={`/longOperation/${operation.operation.value?.["org-op-id"]}`}
+        >
+          See full operation
+        </Link>
+      </div>
+    );
+  }
   return null;
 };
 
@@ -81,7 +79,7 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
   className,
 }) => {
   const {
-    settings: { rawJsonView },
+    settings: { rawJsonView, prettyJsonView },
   } = useUserSettingsContext();
 
   const [expanded, setExpanded] = useState<number[]>([]);
@@ -93,11 +91,23 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
     return unformattedOperation ? JSON.stringify(unformattedOperation) : {};
   };
 
-  const renderJsonViewOperation = (operation: Explorer.OperationForTable) => {
+  const renderOperationContent = (
+    rawJsonView: boolean,
+    prettyJsonView: boolean,
+    operation: Explorer.OperationForTable
+  ) => {
+    if (!rawJsonView && !prettyJsonView) {
+      return <div>{getOneLineDescription(operation)}</div>;
+    }
     const unformattedOperation = unformattedOperations?.find(
       (op) => op.operationId === operation.operationId
     )?.operation;
-    return unformattedOperation ? JSON.stringify(unformattedOperation) : null;
+
+    if (prettyJsonView) {
+      return <pre>{JSON.stringify(unformattedOperation, null, 2)}</pre>;
+    } else {
+      return <pre>{JSON.stringify(unformattedOperation)}</pre>;
+    }
   };
 
   return (
@@ -109,13 +119,15 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
     >
       <TableHeader>
         <TableRow>
-          <TableHead></TableHead>
-          <TableHead></TableHead>
-          <TableHead className="pl-2">Block</TableHead>
+          <TableHead className="sticky left-0 bg-explorer-dark-gray"></TableHead>
+          <TableHead className="pl-2 sticky left-12 bg-explorer-dark-gray">
+            Block
+          </TableHead>
           <TableHead>Transaction</TableHead>
           <TableHead>Time</TableHead>
           <TableHead>Operation</TableHead>
           <TableHead>Content</TableHead>
+          <TableHead></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody className="max-w-[100%]">
@@ -129,6 +141,68 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
                 key={index}
                 className="border-b border-gray-700"
               >
+                <TableCell className="sticky left-0 bg-explorer-dark-gray xl:bg-inherit">
+                  <CopyJSON value={getUnformattedValue(operation)} />
+                </TableCell>
+                <TableCell
+                  className="pl-2 sticky left-12 bg-explorer-dark-gray xl:bg-inherit"
+                  data-testid="block-number-operation-table"
+                >
+                  <Link
+                    className="text-explorer-turquoise"
+                    href={`/block/${operation.blockNumber}`}
+                  >
+                    {operation.blockNumber?.toLocaleString()}
+                  </Link>
+                </TableCell>
+                <TableCell data-testid="transaction-number">
+                  <Link
+                    className="text-explorer-turquoise"
+                    href={`/transaction/${operation.trxId}`}
+                  >
+                    {operation.trxId?.slice(0, 10)}
+                  </Link>
+                </TableCell>
+                <TableCell className="w-1/5">
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <div>
+                          <TimeAgo
+                            datetime={
+                              new Date(
+                                formatAndDelocalizeTime(operation.timestamp)
+                              )
+                            }
+                          />
+                        </div>
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-white text-black dark:bg-explorer-dark-gray dark:text-white">
+                        {formatAndDelocalizeTime(operation.timestamp)}
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </TableCell>
+                <TableCell data-testid="operation-type">
+                  <div className={`flex justify-stretch p-1 rounded `}>
+                    <span
+                      className={`rounded w-4 mr-2 ${operationBgColor}`}
+                    ></span>
+                    <span>
+                      {getOperationTypeForDisplay(operation.operation.type)}
+                    </span>
+                  </div>
+                </TableCell>
+                <TableCell
+                  className="min-w-[200px] md:max-w-0 w-1/2 py-2"
+                  data-testid="operation-content"
+                >
+                  {renderOperationContent(
+                    rawJsonView,
+                    prettyJsonView,
+                    operation
+                  )}
+                </TableCell>
                 <TableCell>
                   <div
                     className={cn({
@@ -173,64 +247,13 @@ const OperationsTable: React.FC<OperationsTableProps> = ({
                     )}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <CopyJSON value={getUnformattedValue(operation)} />
-                </TableCell>
-                <TableCell
-                  className="pl-2"
-                  data-testid="block-number-operation-table"
-                >
-                  <Link
-                    className="text-explorer-turquoise"
-                    href={`/block/${operation.blockNumber}`}
-                  >
-                    {operation.blockNumber?.toLocaleString()}
-                  </Link>
-                </TableCell>
-                <TableCell data-testid="transaction-number">
-                  <Link
-                    className="text-explorer-turquoise"
-                    href={`/transaction/${operation.trxId}`}
-                  >
-                    {operation.trxId?.slice(0, 10)}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <TimeAgo
-                    datetime={
-                      new Date(
-                        formatAndDelocalizeTime(operation.timestamp)
-                      )
-                    }
-                  />
-                </TableCell>
-                <TableCell data-testid="operation-type">
-                  <div className={`flex justify-stretch p-1 rounded `}>
-                    <span
-                      className={`rounded w-4 mr-2 ${operationBgColor}`}
-                    ></span>
-                    <span>
-                      {getOperationTypeForDisplay(operation.operation.type)}
-                    </span>
-                  </div>
-                </TableCell>
-                <TableCell
-                  className="md:max-w-0 w-1/2"
-                  data-testid="operation-content"
-                >
-                  {rawJsonView ? (
-                    <pre>{renderJsonViewOperation(operation)}</pre>
-                  ) : (
-                    <div>{getOneLineDescription(operation)}</div>
-                  )}
-                </TableCell>
               </TableRow>
               {operation.operation.type === "custom_json_operation" &&
                 expanded.includes(operation.operationId || 0) && (
                   <TableRow>
                     <TableCell
                       data-testid="details"
-                      colSpan={6}
+                      colSpan={7}
                       className="py-2"
                     >
                       <JSONView

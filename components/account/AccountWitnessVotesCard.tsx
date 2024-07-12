@@ -11,13 +11,17 @@ type AccountWitnessVotesCardProps = {
 
 const buildTableBody = (voters: string[]) => {
   
+  
   return voters.map((voter: string, index: number) => {
+    const isLast = index === voters.length - 1;
     const isLast = index === voters.length - 1;
     return (
       <Fragment key={index}>
         <TableRow
           className={cn(
             {
+              "border-t border-gray-700": index !==0,
+              "border-b border-gray-700": !isLast,
               "border-t border-gray-700": index !==0,
               "border-b border-gray-700": !isLast,
             },
@@ -40,11 +44,17 @@ const buildTableBody = (voters: string[]) => {
 };
 
 const AccountWitnessVotesCard: React.FC<AccountWitnessVotesCardProps> = ({
+
   voters:  initialVoters, 
+
 }) => {
   const [isPropertiesHidden, setIsPropertiesHidden] = useState(true);
   const voters = [...initialVoters];
+  const voters = [...initialVoters];
   if (!voters || !voters.length) return null;
+  voters.sort((a, b) =>
+    a.toLowerCase().localeCompare(b.toLowerCase())  // Changed: Sorting logic to ensure alphabetical order
+  );
   voters.sort((a, b) =>
     a.toLowerCase().localeCompare(b.toLowerCase())  // Changed: Sorting logic to ensure alphabetical order
   );

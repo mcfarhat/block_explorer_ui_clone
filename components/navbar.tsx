@@ -5,9 +5,9 @@ import SearchBar from "./SearchBar";
 import { useMediaQuery } from "@/utils/Hooks";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Toggle } from "./ui/toggle";
 import { useUserSettingsContext } from "./contexts/UserSettingsContext";
 import SyncInfo from "./home/SyncInfo";
+import ViewPopover from "./ViewPopover";
 
 export default function Navbar() {
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -44,39 +44,33 @@ export default function Navbar() {
                 height={34}
                 width={34}
                 onClick={() => setMenuOpen(true)}
-                className="flex-shrink-0"
+                className="flex-shrink-0 cursor-pointer"
               />
             </div>
             <div
               className={cn(
-                "fixed top-0 left-0 bg-explorer-dark-gray w-screen h-screen translate-x-full duration-500 z-50",
+                "fixed top-0 right-0 p-5 bg-explorer-dark-gray w-full h-full translate-x-full duration-500 z-50",
                 { "translate-x-0": menuOpen }
               )}
             >
-              <div className="w-full flex items-center justify-end py-3 px-2">
+              <div className="w-full flex items-center justify-end">
                 <X
                   onClick={() => setMenuOpen(false)}
                   height={40}
                   width={40}
+                  className="cursor-pointer"
                 />
               </div>
-              <div className="flex flex-col px-4 text-2xl gap-y-2">
+              <div className="flex flex-col text-2xl gap-y-2">
                 <Link
                   href={"/witnesses"}
                   onClick={() => setMenuOpen(false)}
                 >
                   Witnesses
                 </Link>
-                <Toggle
-                  checked={settings.rawJsonView}
-                  onClick={() =>
-                    setSettings({
-                      ...settings,
-                      rawJsonView: !settings.rawJsonView,
-                    })
-                  }
-                  leftLabel="Raw Json view"
-                />
+                <div>
+                  <ViewPopover isMobile={isMobile} />
+                </div>
               </div>
             </div>
           </div>
@@ -108,18 +102,7 @@ export default function Navbar() {
               >
                 Witnesses
               </Link>
-              <Toggle
-                data-testid="toggle"
-                checked={settings.rawJsonView}
-                onClick={() =>
-                  setSettings({
-                    ...settings,
-                    rawJsonView: !settings.rawJsonView,
-                  })
-                }
-                leftLabel="Raw Json view"
-                className="ml-6"
-              />
+              <ViewPopover />
             </div>
             <SearchBar open={true} />
           </>
