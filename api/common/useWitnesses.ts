@@ -11,8 +11,26 @@ const useWitnesses = (witnessesLimit: number) => {
     queryFn: () => fetchingService.getWitnesses(witnessesLimit, 0, "votes", "desc"),
     refetchOnWindowFocus: false,
   });
+  const {
+    data: activeWitnessesData,
+    isLoading: isActiveWitnessDataLoading,
+    isError: isActiveWitnessDataError,
+  } = useQuery({
+    queryKey: ["activeWitnesses"],
+    queryFn: async () => {
+      const witnesses = await fetchingService.getWitnessesByVote();
+      return witnesses.filter((witness: any) => witness.isActive);
+    },
+    refetchOnWindowFocus: false,
+  });
+  const isLoading = isWitnessDataLoading || isActiveWitnessDataLoading;
+  const isError = isWitnessDataError || isActiveWitnessDataError;
 
-  return { witnessesData, isWitnessDataLoading, isWitnessDataError };
+  return {
+    witnessesData,
+    activeWitnessesData,
+    isLoading,
+    isError,
+  };
 };
-
 export default useWitnesses;
