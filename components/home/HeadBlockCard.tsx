@@ -85,7 +85,9 @@ const HeadBlockCard: React.FC<HeadBlockCardProps> = ({
         </div>
       </CardHeader>
 
+
       <CardContent className="p-2">
+        <div className="my-2">Operations per block: {opcount} </div>
         <div className="my-2">Operations per block: {opcount} </div>
         {blockDetails?.producer_account && (
           <div className="flex">
