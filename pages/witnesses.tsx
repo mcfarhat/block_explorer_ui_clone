@@ -21,18 +21,15 @@ export default function Witnesses() {
   const [isVotersOpen, setIsVotersOpen] = useState<boolean>(false);
   const [isVotesHistoryOpen, setIsVotesHistoryOpen] = useState<boolean>(false);
 
-  const { witnessesData, activeWitnessesData, isLoading, isError } = useWitnesses(
+  const { witnessesData, isWitnessDataLoading } = useWitnesses(
     config.witnessesPerPages.witnesses
   );
 
-  if (isLoading) {
-    return (
-      <Loader2 className="dark:text-white animate-spin mt-1 h-8 w-8 ml-3 ..." />
-    );
+  if (isWitnessDataLoading) {
+    return <Loader2 className="dark:text-white animate-spin mt-1 h-8 w-8 ml-3 ..." />;
   }
 
   if (!witnessesData || !witnessesData.length) return;
-  if (isError || !witnessesData || !witnessesData.length) return null;
 
 
   const changeVotersDialogue = (isOpen: boolean) => {

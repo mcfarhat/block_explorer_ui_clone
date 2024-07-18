@@ -23,30 +23,7 @@ class FetchingService {
     this.nodeUrl = newUrl;
   }
  
-  async getWitnessesByVote(): Promise<any> {
-    const response = await fetch("https://api.hive.blog", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        jsonrpc: "2.0",
-        method: "condenser_api.get_witnesses_by_vote",
-        id: 1,
-        params: [null, 200] 
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.result) {
-      return data.result.map((witness: any) => ({
-        ...witness,
-        isActive: witness.signing_key !== "STM1111111111111111111111111111111114T1Anm"
-      }));
-    }
-
-    throw new Error("Failed to fetch witnesses by vote");
-  }
-
+  
   public setHiveChain(hiveChain: IHiveChainInterface | null) {
     this.extendedHiveChain = hiveChain?.extend<ExplorerNodeApi>();
     if (this.extendedHiveChain && this.nodeUrl) {
@@ -215,7 +192,12 @@ class FetchingService {
       _order_by: orderBy,
       _order_is: orderIs,
     };
-    return await this.callApi("get_witnesses", requestBody);
+    const witnesses = await this.callApi("get_witnesses", requestBody);
+
+    return witnesses.map((witness: Hive.Witness) => ({
+      ...witness,
+      isActive: witness.signing_key !== "STM1111111111111111111111111111111114T1Anm"
+    }));
   }
 
   async getWitnessesVotersNum(witness: string): Promise<unknown> {
