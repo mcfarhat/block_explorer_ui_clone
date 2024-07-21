@@ -9,12 +9,8 @@ import AccountWitnessVotesCard from "./AccountWitnessVotesCard";
 import VotersDialog from "../Witnesses/VotersDialog";
 import VotesHistoryDialog from "../Witnesses/VotesHistoryDialog";
 import useWitnessDetails from "@/api/common/useWitnessDetails";
-<<<<<<< HEAD
-import VestingDelegationsCard from "../Delegations/VestingDelegationsCard";
-=======
 import AccountVestingDelegationsCard from "./AccountVestingDelegationsCard";
 import { config } from "@/Config";
->>>>>>> gitlab/develop
 
 interface AccountDetailsSectionProps {
   accountName: string;
@@ -73,17 +69,10 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
         />
       )}
       <AccountWitnessVotesCard voters={accountDetails.witness_votes} />
-<<<<<<< HEAD
-      <VestingDelegationsCard
-            delegatorAccount={accountName}
-            startAccount={null}
-            limit={1000}
-=======
       <AccountVestingDelegationsCard
             delegatorAccount={accountName}
             startAccount={null}
             limit={config.maxDelegatorsCount}
->>>>>>> gitlab/develop
           />
       <VotersDialog
         accountName={accountName}
