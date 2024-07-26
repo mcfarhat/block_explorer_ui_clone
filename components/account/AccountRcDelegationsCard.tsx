@@ -55,13 +55,13 @@ const AccountRcDelegationsCard: React.FC<AccountRcDelegationsCardProps> = ({
     isRcDelegationsError,
   } = useRcDelegations(delegatorAccount, limit);
 
-  if (isRcDelegationsLoading) {
-    return <div></div>;
-  }
+  // if (isRcDelegationsLoading) {
+  //   return <div></div>;
+  // }
 
-  if (isRcDelegationsError) {
-    return <div></div>;
-  }
+  // if (isRcDelegationsError) {
+  //   return <div></div>;
+  // }
 
   const delegations = rcDelegationsData?.result || [];
   if (!delegations.length) return <div className="text-black">No RC delegations found.</div>;
