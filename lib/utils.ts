@@ -54,18 +54,35 @@ export const getPageUrlParams = (urlParams: Explorer.UrlParam[]) => {
  * @returns Formatted string
  */
 export const formatNumber = (
-  numberToFormat: number,
-  isVest: boolean
+  numberToFormat: number | string,
+  isVest: boolean,
+  formatDecimals: boolean = true
 ): string => {
+  if (typeof numberToFormat === 'string') {
+    numberToFormat = parseFloat(numberToFormat);
+  }
+
   const precision = isVest
     ? config.precisions.vests
     : config.precisions.hivePower;
-  const vestsFormat = isVest ? { minimumFractionDigits: precision } : undefined;
-  return (numberToFormat / Math.pow(10, precision)).toLocaleString(
-    undefined,
-    vestsFormat
-  );
+
+  let formattedNumber = (numberToFormat / Math.pow(10, precision)).toFixed(precision);
+
+  if (formatDecimals) {
+    const parts = formattedNumber.split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    // Remove decimal part if it is 0
+    if (parseFloat(parts[1]) === 0) {
+      return parts[0];
+    } else {
+      return parts.join(".");
+    }
+  } else {
+    return formattedNumber.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 };
+
+
 
 /**
  * Properly format percentage values
