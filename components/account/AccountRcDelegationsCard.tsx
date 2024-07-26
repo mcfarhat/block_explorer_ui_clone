@@ -1,25 +1,24 @@
-import { useState, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { ArrowDown, ArrowUp } from "lucide-react";
 import Link from "next/link";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Table, TableBody, TableRow, TableCell } from "../ui/table";
 import { cn } from "@/lib/utils";
 import formatNumber from "@/utils/thousandsSeperator";
-import useVestingDelegations from "@/api/common/useVestingDelegations";
+import useRcDelegations from "@/api/common/useRcDelegations";
 
-type VestingDelegation = {
-  delegatee: string;
-  vesting_shares: string;
+type RcDelegation = {
+  to: string;
+  delegated_rc: number;
 };
 
-type AccountVestingDelegationsCardProps = {
+type AccountRcDelegationsCardProps = {
   delegatorAccount: string;
-  startAccount: string | null;
   limit: number;
 };
 
-const buildTableBody = (delegations: VestingDelegation[]) => {
-  return delegations.map((delegation: VestingDelegation, index: number) => {
+const buildTableBody = (delegations: RcDelegation[]) => {
+  return delegations.map((delegation: RcDelegation, index: number) => {
     const isLast = index === delegations.length - 1;
     return (
       <Fragment key={index}>
@@ -34,42 +33,41 @@ const buildTableBody = (delegations: VestingDelegation[]) => {
         >
           <TableCell>{index + 1}</TableCell>
           <TableCell className="text-right">
-            <Link className="text-blue-400" href={`/@${delegation.delegatee}`}>
-              {delegation.delegatee}
+            <Link className="text-blue-400" href={`/@${delegation.to}`}>
+              {delegation.to}
             </Link>
           </TableCell>
-          <TableCell className="text-right">{formatNumber(delegation.vesting_shares)}</TableCell>
+          <TableCell className="text-right">{formatNumber(delegation.delegated_rc)}</TableCell>
         </TableRow>
       </Fragment>
     );
   });
 };
-const AccountVestingDelegationsCard: React.FC<AccountVestingDelegationsCardProps> = ({
+
+const AccountRcDelegationsCard: React.FC<AccountRcDelegationsCardProps> = ({
   delegatorAccount,
-  startAccount,
   limit,
 }) => {
   const [isPropertiesHidden, setIsPropertiesHidden] = useState(true);
   const {
-    vestingDelegationsData,
-    isVestingDelegationsLoading,
-    isVestingDelegationsError,
-  } = useVestingDelegations(delegatorAccount, startAccount, limit);
+    rcDelegationsData,
+    isRcDelegationsLoading,
+    isRcDelegationsError,
+  } = useRcDelegations(delegatorAccount, limit);
 
-  if (isVestingDelegationsLoading) {
+  if (isRcDelegationsLoading) {
     return <div></div>;
   }
 
-  if (isVestingDelegationsError) {
+  if (isRcDelegationsError) {
     return <div></div>;
   }
 
-  const delegations = vestingDelegationsData?.result || [];
-  {console.log(delegations)}
-  if (!delegations.length) return <div className="text-black"></div>;
+  const delegations = rcDelegationsData?.result || [];
+  if (!delegations.length) return <div className="text-black">No RC delegations found.</div>;
 
-  delegations.sort((a: VestingDelegation, b: VestingDelegation) =>
-    a.delegatee.toLowerCase().localeCompare(b.delegatee.toLowerCase())
+  delegations.sort((a: RcDelegation, b: RcDelegation) =>
+    a.to.toLowerCase().localeCompare(b.to.toLowerCase())
   );
 
   const handlePropertiesVisibility = () => {
@@ -77,13 +75,13 @@ const AccountVestingDelegationsCard: React.FC<AccountVestingDelegationsCardProps
   };
 
   return (
-    <Card data-testid="vesting-delegations-dropdown" className="overflow-hidden">
+    <Card data-testid="rc-delegations-dropdown" className="overflow-hidden">
       <CardHeader className="p-0">
         <div
           onClick={handlePropertiesVisibility}
           className="h-full flex justify-between align-center p-2 hover:bg-slate-600 cursor-pointer px-4"
         >
-          <div className="text-lg">Vesting Delegations</div>
+          <div className="text-lg">RC Delegations</div>
           {isPropertiesHidden ? <ArrowDown /> : <ArrowUp />}
         </div>
       </CardHeader>
@@ -96,4 +94,4 @@ const AccountVestingDelegationsCard: React.FC<AccountVestingDelegationsCardProps
   );
 };
 
-export default AccountVestingDelegationsCard;
+export default AccountRcDelegationsCard;

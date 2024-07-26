@@ -11,6 +11,7 @@ import VotesHistoryDialog from "../Witnesses/VotesHistoryDialog";
 import useWitnessDetails from "@/api/common/useWitnessDetails";
 import AccountVestingDelegationsCard from "./AccountVestingDelegationsCard";
 import { config } from "@/Config";
+import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 
 interface AccountDetailsSectionProps {
   accountName: string;
@@ -74,6 +75,10 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
             startAccount={null}
             limit={config.maxDelegatorsCount}
           />
+      <AccountRcDelegationsCard
+        delegatorAccount= {accountName}
+        limit={config.maxDelegatorsCount}
+      />
       <VotersDialog
         accountName={accountName}
         isVotersOpen={isVotersModalOpen}
