@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Loader2, MenuSquareIcon } from "lucide-react";
+import {  formatFeedAge, isFeedAgeBeyondThreshold} from "@/utils/TimeUtils";
+
 import {
   Table,
   TableBody,
@@ -156,9 +158,10 @@ export default function Witnesses() {
                     ? singleWitness.price_feed.toLocaleString()
                     : "--"}
                 </TableCell>
-                <TableCell>
-                  {singleWitness.feed_age
-                    ? singleWitness.feed_age.split(".")[0]
+                <TableCell
+                className={
+                    isFeedAgeBeyondThreshold(singleWitness.feed_age, 3)? "text-red-500": ""}>
+                  {singleWitness.feed_age ? formatFeedAge(singleWitness.feed_age)
                     : "--"}
                 </TableCell>
                 <TableCell>{singleWitness.version}</TableCell>
