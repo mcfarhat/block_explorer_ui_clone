@@ -11,8 +11,7 @@ const useWitnesses = (witnessesLimit: number) => {
     queryFn: () => fetchingService.getWitnesses(witnessesLimit, 0, "votes", "desc"),
     refetchOnWindowFocus: false,
   });
-
-  return { witnessesData, isWitnessDataLoading, isWitnessDataError };
+ 
+    return { witnessesData, isWitnessDataLoading, isWitnessDataError};
 };
-
 export default useWitnesses;

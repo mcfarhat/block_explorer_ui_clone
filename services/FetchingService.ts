@@ -22,7 +22,8 @@ class FetchingService {
   public setNodeUrl(newUrl: string) {
     this.nodeUrl = newUrl;
   }
-
+ 
+  
   public setHiveChain(hiveChain: IHiveChainInterface | null) {
     this.extendedHiveChain = hiveChain?.extend<ExplorerNodeApi>();
     if (this.extendedHiveChain && this.nodeUrl) {
@@ -191,7 +192,12 @@ class FetchingService {
       _order_by: orderBy,
       _order_is: orderIs,
     };
-    return await this.callApi("get_witnesses", requestBody);
+    const witnesses = await this.callApi("get_witnesses", requestBody);
+
+    return witnesses.map((witness: Hive.Witness) => ({
+      ...witness,
+      isActive: witness.signing_key !== "STM1111111111111111111111111111111114T1Anm"
+    }));
   }
 
   async getWitnessesVotersNum(witness: string): Promise<unknown> {

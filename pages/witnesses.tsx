@@ -1,6 +1,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { Loader2, MenuSquareIcon } from "lucide-react";
+import {  formatFeedAge, isFeedAgeBeyondThreshold} from "@/utils/TimeUtils";
+
 import {
   Table,
   TableBody,
@@ -27,12 +29,11 @@ export default function Witnesses() {
   );
 
   if (isWitnessDataLoading) {
-    return (
-      <Loader2 className="dark:text-white animate-spin mt-1 h-8 w-8 ml-3 ..." />
-    );
+    return <Loader2 className="dark:text-white animate-spin mt-1 h-8 w-8 ml-3 ..." />;
   }
 
   if (!witnessesData || !witnessesData.length) return;
+
 
   const changeVotersDialogue = (isOpen: boolean) => {
     setIsVotersOpen(isOpen);
@@ -77,7 +78,7 @@ export default function Witnesses() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {witnessesData.map((singleWitness, index) => (
+            {witnessesData.map((singleWitness: any, index: number) => (
               <TableRow
                 key={index}
                 className={cn(`${index % 2 === 0 ? "bg-gray-800" : "bg-gray-900"}`,{"line-through": singleWitness.signing_key === config.inactiveWitnessKey})}
@@ -101,6 +102,7 @@ export default function Witnesses() {
                   <Link
                     href={`/@${singleWitness.witness}`}
                     data-testid="witness-name"
+                    className={singleWitness.signing_key === "STM1111111111111111111111111111111114T1Anm" ? "line-through" : ""}
                   >
                     {singleWitness.witness}
                   </Link>
@@ -151,6 +153,7 @@ export default function Witnesses() {
                     ? singleWitness.price_feed.toLocaleString()
                     : "--"}
                 </TableCell>
+
                 <TableCell>
                   {singleWitness.feed_updated_at
                     ? moment(singleWitness.feed_updated_at).fromNow()
