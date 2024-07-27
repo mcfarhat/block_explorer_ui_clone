@@ -66,7 +66,6 @@ export const formatNumber = (
     vestsFormat
   );
 };
-
 /**
  * Properly format percentage values
  * @param numberToFormat raw percentage from Hive backend.

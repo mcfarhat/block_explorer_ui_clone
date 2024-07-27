@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { Table, TableBody, TableRow, TableCell } from "../ui/table";
 import { cn } from "@/lib/utils";
 import useRcDelegations from "@/api/common/useRcDelegations";
+import { formatNumber } from "@/lib/utils";
 type RcDelegation = {
   to: string;
   delegated_rc: number;
@@ -35,7 +36,7 @@ const buildTableBody = (delegations: RcDelegation[]) => {
               {delegation.to}
             </Link>
           </TableCell>
-          <TableCell className="text-right">{delegation.delegated_rc}</TableCell>
+          <TableCell className="text-right">{formatNumber(delegation.delegated_rc,false)}</TableCell>
         </TableRow>
       </Fragment>
     );
@@ -53,13 +54,6 @@ const AccountRcDelegationsCard: React.FC<AccountRcDelegationsCardProps> = ({
     isRcDelegationsError,
   } = useRcDelegations(delegatorAccount, limit);
 
-  if (isRcDelegationsLoading) {
-    return <div></div>;
-  }
-
-  if (isRcDelegationsError) {
-    return <div></div>;
-  }
 
   const delegations = rcDelegationsData?.result || [];
   if (!delegations.length) return <div className="text-black"></div>;
@@ -93,3 +87,4 @@ const AccountRcDelegationsCard: React.FC<AccountRcDelegationsCardProps> = ({
 };
 
 export default AccountRcDelegationsCard;
+

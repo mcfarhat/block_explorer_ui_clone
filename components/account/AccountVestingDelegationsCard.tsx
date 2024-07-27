@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { Table, TableBody, TableRow, TableCell } from "../ui/table";
 import { cn } from "@/lib/utils";
 import useVestingDelegations from "@/api/common/useVestingDelegations";
-
+import { formatNumber } from "@/lib/utils";
 type VestingDelegation = {
   delegatee: string;
   vesting_shares: string;
@@ -37,7 +37,7 @@ const buildTableBody = (delegations: VestingDelegation[]) => {
               {delegation.delegatee}
             </Link>
           </TableCell>
-          <TableCell className="text-right">{delegation.vesting_shares}</TableCell>
+          <TableCell className="text-right">{formatNumber(parseFloat(delegation.vesting_shares),true)}</TableCell>
         </TableRow>
       </Fragment>
     );
@@ -55,13 +55,13 @@ const AccountVestingDelegationsCard: React.FC<AccountVestingDelegationsCardProps
     isVestingDelegationsError,
   } = useVestingDelegations(delegatorAccount, startAccount, limit);
 
-  if (isVestingDelegationsLoading) {
-    return <div></div>;
-  }
+  // if (isVestingDelegationsLoading) {
+  //   return <div></div>;
+  // }
 
-  if (isVestingDelegationsError) {
-    return <div></div>;
-  }
+  // if (isVestingDelegationsError) {
+  //   return <div></div>;
+  // }
 
   const delegations = vestingDelegationsData?.result || [];
   {console.log(delegations)}

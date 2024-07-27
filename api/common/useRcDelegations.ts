@@ -15,4 +15,5 @@ const useRcDelegations = (delegatorAccount: string, limit: number) => {
   return { rcDelegationsData, isRcDelegationsLoading, isRcDelegationsError };
 };
 
+
 export default useRcDelegations;
