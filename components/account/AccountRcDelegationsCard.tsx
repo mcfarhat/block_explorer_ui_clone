@@ -54,16 +54,9 @@ const AccountRcDelegationsCard: React.FC<AccountRcDelegationsCardProps> = ({
     isRcDelegationsError,
   } = useRcDelegations(delegatorAccount, limit);
 
-  // if (isRcDelegationsLoading) {
-  //   return <div></div>;
-  // }
-
-  // if (isRcDelegationsError) {
-  //   return <div></div>;
-  // }
 
   const delegations = rcDelegationsData?.result || [];
-  if (!delegations.length) return <div className="text-black">No RC delegations found.</div>;
+  if (!delegations.length) return <div className="text-black"></div>;
 
   delegations.sort((a: RcDelegation, b: RcDelegation) =>
     a.to.toLowerCase().localeCompare(b.to.toLowerCase())
@@ -94,3 +87,4 @@ const AccountRcDelegationsCard: React.FC<AccountRcDelegationsCardProps> = ({
 };
 
 export default AccountRcDelegationsCard;
+

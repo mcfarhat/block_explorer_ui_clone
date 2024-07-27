@@ -7,12 +7,13 @@ const useRcDelegations = (delegatorAccount: string, limit: number) => {
     isLoading: isRcDelegationsLoading,
     isError: isRcDelegationsError,
   } = useQuery({
-    queryKey: ["rcDelegations", delegatorAccount, limit],
+    queryKey: ["RcDelegations", delegatorAccount, limit],
     queryFn: () => fetchingService.getRcDelegations(delegatorAccount, limit),
     refetchOnWindowFocus: false,
   });
 
   return { rcDelegationsData, isRcDelegationsLoading, isRcDelegationsError };
 };
+
 
 export default useRcDelegations;
