@@ -99,7 +99,7 @@ class FetchingService {
       _block_num: blockNumber,
       _filter: filter,
       _body_limit: config.opsBodyLimit,
-      _page_size: 1000,
+      _page_size: config.blockPagePaginationSize,
       _page_num: page,
       _account: account,
       _key_content: keyContent,
@@ -234,6 +234,26 @@ class FetchingService {
       _account: witnessName,
     };
     return await this.callApi("get_witness", requestBody);
+  }
+
+  async getVestingDelegations(delegatorAccount: string, startAccount: string | null, limit: number): Promise<any> {
+    const requestBody = {
+      jsonrpc: "2.0",
+      method: "condenser_api.get_vesting_delegations",
+      params: [delegatorAccount, startAccount, limit],
+      id: 1
+    };
+    return await this.makePostRequest(this.nodeUrl!, requestBody);
+  }
+
+  async getRcDelegations (delegatorAccount: string, limit: number): Promise<any> {
+    const requestBody ={
+      jsonrpc: "2.0",
+      method: "condenser_api.list_rc_direct_delegations",
+      params: [[delegatorAccount, ""], limit],
+      id: 1
+    };
+    return await this.makePostRequest(this.nodeUrl!, requestBody);
   }
 
   async getBlockByTime(date: Date): Promise<number> {

@@ -15,8 +15,9 @@ import VotersDialog from "@/components/Witnesses/VotersDialog";
 import VotesHistoryDialog from "@/components/Witnesses/VotesHistoryDialog";
 import useWitnesses from "@/api/common/useWitnesses";
 import { config } from "@/Config";
-import { formatNumber, formatPercent } from "@/lib/utils";
+import { cn, formatNumber, formatPercent } from "@/lib/utils";
 import Head from "next/head";
+import moment from "moment";
 
 export default function Witnesses() {
   const [voterAccount, setVoterAccount] = useState<string>("");
@@ -80,30 +81,24 @@ export default function Witnesses() {
             {witnessesData.map((singleWitness: any, index: number) => (
               <TableRow
                 key={index}
-                className={`${index % 2 === 0 ? "bg-gray-800" : "bg-gray-900"}`}
+                className={cn(`${index % 2 === 0 ? "bg-gray-800" : "bg-gray-900"}`,{"line-through": singleWitness.signing_key === config.inactiveWitnessKey})}
                 data-testid="witnesses-table-row"
               >
                 <TableCell
-                  className={
-                    `${
-                      index % 2 === 0
-                        ? "bg-gray-800 md:bg-inherit"
-                        : "bg-gray-900 md:bg-inherit"
-                    }` + " sticky left-0 min-w-[20px]"
-                  }
+                  className={cn("sticky left-0 min-w-[20px]", {
+                    "bg-gray-800 md:bg-inherit": index % 2 === 0,
+                    "bg-gray-900 md:bg-inherit": index % 2 !== 0
+                  })}
                 >
                   {index + 1}
                 </TableCell>
                 <TableCell
-                  className={
-                    `${
-                      index % 2 === 0
-                        ? "bg-gray-800 md:bg-inherit"
-                        : "bg-gray-900 md:bg-inherit"
-                    }` + " text-explorer-turquoise sticky left-11"
-                  }
+                  className={cn("text-explorer-turquoise sticky left-11", {
+                    "bg-gray-800 md:bg-inherit": index % 2 === 0,
+                    "bg-gray-900 md:bg-inherit": index % 2 !== 0,
+
+                  })}
                 >
-                  {" "}
                   <Link
                     href={`/@${singleWitness.witness}`}
                     data-testid="witness-name"
@@ -158,10 +153,10 @@ export default function Witnesses() {
                     ? singleWitness.price_feed.toLocaleString()
                     : "--"}
                 </TableCell>
-                <TableCell
-                className={
-                    isFeedAgeBeyondThreshold(singleWitness.feed_age, 3)? "text-red-500": ""}>
-                  {singleWitness.feed_age ? formatFeedAge(singleWitness.feed_age)
+
+                <TableCell>
+                  {singleWitness.feed_updated_at
+                    ? moment(singleWitness.feed_updated_at).fromNow()
                     : "--"}
                 </TableCell>
                 <TableCell>{singleWitness.version}</TableCell>

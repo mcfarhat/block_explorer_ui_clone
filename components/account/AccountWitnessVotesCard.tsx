@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Table, TableBody, TableRow, TableCell } from "../ui/table";
 import { cn } from "@/lib/utils";
+import { config } from "@/Config";
 
 type AccountWitnessVotesCardProps = {
   voters: string[];
@@ -14,14 +15,11 @@ const buildTableBody = (voters: string[]) => {
   
   return voters.map((voter: string, index: number) => {
     const isLast = index === voters.length - 1;
-    const isLast = index === voters.length - 1;
     return (
       <Fragment key={index}>
         <TableRow
           className={cn(
             {
-              "border-t border-gray-700": index !==0,
-              "border-b border-gray-700": !isLast,
               "border-t border-gray-700": index !==0,
               "border-b border-gray-700": !isLast,
             },
@@ -50,7 +48,6 @@ const AccountWitnessVotesCard: React.FC<AccountWitnessVotesCardProps> = ({
 }) => {
   const [isPropertiesHidden, setIsPropertiesHidden] = useState(true);
   const voters = [...initialVoters];
-  const voters = [...initialVoters];
   if (!voters || !voters.length) return null;
   voters.sort((a, b) =>
     a.toLowerCase().localeCompare(b.toLowerCase())  // Changed: Sorting logic to ensure alphabetical order
@@ -72,7 +69,7 @@ const AccountWitnessVotesCard: React.FC<AccountWitnessVotesCardProps> = ({
           onClick={handlePropertiesVisibility}
           className="h-full flex justify-between align-center p-2 hover:bg-slate-600 cursor-pointer px-4"
         >
-          <div className="text-lg">Witness Votes</div>
+          <div className="text-lg">Witness Votes ({voters.length} / {config.maxWitnessVotes})</div>
 
           {isPropertiesHidden ? <ArrowDown /> : <ArrowUp />}
         </div>
