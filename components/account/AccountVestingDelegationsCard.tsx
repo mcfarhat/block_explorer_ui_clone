@@ -6,7 +6,6 @@ import { Table, TableBody, TableRow, TableCell } from "../ui/table";
 import { cn } from "@/lib/utils";
 import useVestingDelegations from "@/api/common/useVestingDelegations";
 import { formatNumber } from "@/lib/utils";
-import format from "@/utils/format";
 type VestingDelegation = {
   delegatee: string;
   vesting_shares: string;
@@ -38,7 +37,7 @@ const buildTableBody = (delegations: VestingDelegation[]) => {
               {delegation.delegatee}
             </Link>
           </TableCell>
-          <TableCell className="text-right">{formatNumber(delegation.vesting_shares,false)}</TableCell>
+          <TableCell className="text-right">{formatNumber(parseFloat(delegation.vesting_shares),true)}</TableCell>
         </TableRow>
       </Fragment>
     );
