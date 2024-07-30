@@ -12,7 +12,6 @@ import useWitnessDetails from "@/api/common/useWitnessDetails";
 import AccountVestingDelegationsCard from "./AccountVestingDelegationsCard";
 import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 import { config } from "@/Config";
-import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 
 interface AccountDetailsSectionProps {
   accountName: string;

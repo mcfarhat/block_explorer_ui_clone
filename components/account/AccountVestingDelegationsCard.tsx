@@ -37,7 +37,7 @@ const buildTableBody = (delegations: VestingDelegation[]) => {
               {delegation.delegatee}
             </Link>
           </TableCell>
-          <TableCell className="text-right">{formatNumber(parseFloat(delegation.vesting_shares),true)}</TableCell>
+          <TableCell className="text-right">{formatNumber(parseFloat(delegation.vesting_shares),true, true)}</TableCell>
         </TableRow>
       </Fragment>
     );

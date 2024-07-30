@@ -36,7 +36,7 @@ const buildTableBody = (delegations: RcDelegation[]) => {
               {delegation.to}
             </Link>
           </TableCell>
-          <TableCell className="text-right">{formatNumber(delegation.delegated_rc,false)}</TableCell>
+          <TableCell className="text-right">{formatNumber(delegation.delegated_rc, false, true)}</TableCell>
         </TableRow>
       </Fragment>
     );
