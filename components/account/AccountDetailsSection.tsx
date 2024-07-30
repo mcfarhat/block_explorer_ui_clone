@@ -1,5 +1,4 @@
 import { useState } from "react";
-
 import useAccountDetails from "@/api/accountPage/useAccountDetails";
 import AccountMainCard from "./AccountMainCard";
 import AccountDetailsCard from "./AccountDetailsCard";
@@ -12,6 +11,8 @@ import useWitnessDetails from "@/api/common/useWitnessDetails";
 import AccountVestingDelegationsCard from "./AccountVestingDelegationsCard";
 import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 import { config } from "@/Config";
+import AccountLiveDataCard from "./AccountLiveDataCard";
+
 
 interface AccountDetailsSectionProps {
   accountName: string;
@@ -40,6 +41,7 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
 
   return (
     <>
+      <AccountLiveDataCard/>
       <AccountMainCard
         accountDetails={accountDetails}
         accountName={accountName}
