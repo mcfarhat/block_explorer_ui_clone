@@ -12,7 +12,9 @@ import AccountVestingDelegationsCard from "./AccountVestingDelegationsCard";
 import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 import { config } from "@/Config";
 import AccountLiveDataCard from "./AccountLiveDataCard";
-
+import useHeadBlock from "@/api/homePage/useHeadBlock";
+import useHeadBlockNumber from "@/api/common/useHeadBlockNum";
+import { useUserSettingsContext } from "../contexts/UserSettingsContext";
 
 interface AccountDetailsSectionProps {
   accountName: string;
@@ -21,6 +23,9 @@ interface AccountDetailsSectionProps {
 const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
   accountName,
 }) => {
+  const {settings} = useUserSettingsContext();
+  const headBlockNum = useHeadBlockNumber(settings.liveData, 20000).headBlockNumberData;
+  const headBlockData = useHeadBlock(headBlockNum).headBlockData;
   const { accountDetails } = useAccountDetails(accountName);
   const { witnessDetails, isWitnessDetailsLoading, isWitnessDetailsError } =
     useWitnessDetails(accountName, !!accountDetails?.is_witness);
@@ -41,7 +46,7 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
 
   return (
     <>
-      <AccountLiveDataCard/>
+      <AccountLiveDataCard blockDetails={headBlockData} />
       <AccountMainCard
         accountDetails={accountDetails}
         accountName={accountName}

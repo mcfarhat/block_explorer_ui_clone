@@ -1,52 +1,68 @@
-import { useState, useEffect } from 'react';
-import Explorer from '@/types/Explorer';
-import { useUserSettingsContext } from '../contexts/UserSettingsContext';
-import { useBlockchainSyncInfo } from '@/utils/Hooks';
-import { Toggle } from '../ui/toggle';
-import { Card, CardHeader, CardContent } from '../ui/card';
-import Link from 'next/link';
-import { config } from '@/Config';
+import React, { useEffect } from "react";
+import Link from "next/link";
+import { Toggle } from "../ui/toggle";
+import { Card, CardHeader } from "../ui/card";
+import { useUserSettingsContext } from "../contexts/UserSettingsContext";
+import { useBlockchainSyncInfo } from "@/utils/Hooks"; // Ensure this hook is properly defined
+import { getBlockDifference } from "@/components/home/SyncInfo";
+import { config } from "@/Config";
+import Hive from "@/types/Hive";
 
-const AccountLiveDataCard: React.FC = () => {
+interface CardHeaderProps {
+  blockDetails?: Hive.BlockDetails;
+}
+
+const AccountLiveDataCard: React.FC<CardHeaderProps> = ({ blockDetails }) => {
   const { settings, setSettings } = useUserSettingsContext();
-  const { explorerBlockNumber, hiveBlockNumber, loading: isLoading } = useBlockchainSyncInfo();
+  const {
+    explorerBlockNumber,
+    hiveBlockNumber,
+    loading: isLoading,
+  } = useBlockchainSyncInfo(settings.liveData, 20000); // Pass settings.liveData and the interval
 
-  const blockDifference = (hiveBlockNumber || 0) - (explorerBlockNumber || 0);
-  const isLiveDataToggleDisabled = blockDifference > config.liveblockSecurityDifference || isLoading;
+  const blockDifference = getBlockDifference(
+    hiveBlockNumber,
+    explorerBlockNumber
+  );
+
+  const isLiveDataToggleDisabled =
+    blockDifference > config.liveblockSecurityDifference || isLoading;
 
   useEffect(() => {
-    if (settings.liveData) {
-      const interval = setInterval(() => {
-        // No need to explicitly call a fetch function, 
-        // The hook will handle data updates
-      }, 20000); // 20 seconds
+    const interval = setInterval(() => {
+      if (settings.liveData) {
+        // Trigger the refetch here
+        setSettings({ ...settings });
+      }
+    }, 20000);
 
-      return () => clearInterval(interval);
-    }
-  }, [settings.liveData]);
+    return () => clearInterval(interval);
+  }, [settings, setSettings]);
 
   return (
-    <Card className="col-span-4 md:col-span-1 bg-explorer-dark-gray p-4 rounded-lg mb-4">
+    <Card className="col-span-4 md:col-span-1" data-testid="head-block-card">
       <CardHeader>
         <Toggle
           disabled={isLiveDataToggleDisabled}
           checked={settings.liveData}
-          onClick={() => setSettings({
-            ...settings,
-            liveData: !settings.liveData,
-          })}
+          onClick={() =>
+            setSettings({
+              ...settings,
+              liveData: !settings.liveData,
+            })
+          }
           className="text-base"
           leftLabel="Live data"
         />
         <div className="text-explorer-turquoise text-2xl text-left">
-          <Link href={`/block/${explorerBlockNumber}`} data-testid="block-number-link">
-            Block: {explorerBlockNumber?.toLocaleString()}
+          <Link
+            href={`/block/${blockDetails?.block_num}`} // Adjusted template string syntax
+            data-testid="block-number-link"
+          >
+            Block: {blockDetails?.block_num?.toLocaleString()}
           </Link>
         </div>
       </CardHeader>
-      <CardContent className="p-2">
-        {/* Additional content can be added here if needed */}
-      </CardContent>
     </Card>
   );
 };
