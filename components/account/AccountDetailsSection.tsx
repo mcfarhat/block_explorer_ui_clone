@@ -12,10 +12,6 @@ import AccountVestingDelegationsCard from "./AccountVestingDelegationsCard";
 import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 import { config } from "@/Config";
 import AccountLiveDataCard from "./AccountLiveDataCard";
-import useHeadBlock from "@/api/homePage/useHeadBlock";
-import useHeadBlockNumber from "@/api/common/useHeadBlockNum";
-import { useUserSettingsContext } from "../contexts/UserSettingsContext";
-import AccountLiveData from "./AccountLiveDataCard";
 
 interface AccountDetailsSectionProps {
   accountName: string;
