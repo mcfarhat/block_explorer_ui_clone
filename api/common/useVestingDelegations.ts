@@ -6,13 +6,14 @@ const useVestingDelegations = (delegatorAccount: string, startAccount: string | 
     data: vestingDelegationsData,
     isLoading: isVestingDelegationsLoading,
     isError: isVestingDelegationsError,
+    refetch: refetchVestingDelegations,
   } = useQuery({
     queryKey: ["vestingDelegations", delegatorAccount, startAccount, limit],
     queryFn: () => fetchingService.getVestingDelegations(delegatorAccount, startAccount, limit),
     refetchOnWindowFocus: false,
   });
 
-  return { vestingDelegationsData, isVestingDelegationsLoading, isVestingDelegationsError };
+  return { vestingDelegationsData, isVestingDelegationsLoading, isVestingDelegationsError, refetchVestingDelegations };
 };
 
 export default useVestingDelegations;

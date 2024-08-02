@@ -15,17 +15,21 @@ import AccountLiveDataCard from "./AccountLiveDataCard";
 import useHeadBlock from "@/api/homePage/useHeadBlock";
 import useHeadBlockNumber from "@/api/common/useHeadBlockNum";
 import { useUserSettingsContext } from "../contexts/UserSettingsContext";
+import AccountLiveData from "./AccountLiveDataCard";
 
 interface AccountDetailsSectionProps {
   accountName: string;
+  liveDataOperations: boolean;
+  setLiveDataOperations: (state: boolean) => void;
+  refetchAccountOperations: any;
 }
 
 const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
-  accountName,
+  accountName, 
+  liveDataOperations,
+  setLiveDataOperations,
+  refetchAccountOperations
 }) => {
-  const {settings} = useUserSettingsContext();
-  const headBlockNum = useHeadBlockNumber(settings.liveData, 20000).headBlockNumberData;
-  const headBlockData = useHeadBlock(headBlockNum).headBlockData;
   const { accountDetails } = useAccountDetails(accountName);
   const { witnessDetails, isWitnessDetailsLoading, isWitnessDetailsError } =
     useWitnessDetails(accountName, !!accountDetails?.is_witness);
@@ -46,7 +50,12 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
 
   return (
     <>
-      <AccountLiveDataCard blockDetails={headBlockData} />
+      <AccountLiveDataCard 
+      accountName= {accountName} 
+      liveDataOperations= {liveDataOperations}
+      setLiveDataOperations={setLiveDataOperations}
+      refetchAccountOperations = {refetchAccountOperations}
+      />
       <AccountMainCard
         accountDetails={accountDetails}
         accountName={accountName}
