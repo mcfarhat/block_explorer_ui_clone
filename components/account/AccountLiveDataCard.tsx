@@ -9,11 +9,15 @@ import useVestingDelegations from "@/api/common/useVestingDelegations";
 import useWitnessVoters from "@/api/common/useWitnessVoters";
 import useWitnessVotesHistory from "@/api/common/useWitnessVotesHistory";
 import moment from "moment";
+import { QueryObserverResult } from "@tanstack/react-query";
+import Hive from "@/types/Hive";
+import { config } from "@/Config";
+
 interface AccountLiveDataProps {
   accountName: string;
   liveDataOperations: boolean;
   setLiveDataOperations: (state: boolean) => void;
-  refetchAccountOperations: any;
+  refetchAccountOperations: QueryObserverResult<Hive.AccountOperationsResponse>["refetch"];
 }
 
 const AccountLiveData: React.FC<AccountLiveDataProps> = ({ 
@@ -40,59 +44,18 @@ const AccountLiveData: React.FC<AccountLiveDataProps> = ({
   const [toDate, setToDate] = useState<Date>(moment().toDate());
   const {votesHistory, isVotesHistoryLoading, isVotesHistoryError, refetchVotesHistory} = useWitnessVotesHistory(accountName, false, fromDate, toDate);
   useEffect(() => {
-    const intervals: NodeJS.Timeout[] = [];
-  
-    if (liveDataManabars) {
-      intervals.push(setInterval(() => {
-        refetchManabars();
-      }, 20000)); 
-    }
-    
-    if (liveDataDetails) {
-      intervals.push(setInterval(() => {
-        refetchAccountDetails();
-      }, 20000)); 
-    }
-    
-    if (liveDataOperations) {
-      intervals.push(setInterval(() => {
-        refetchAccountOperations();
-      }, 20000)); 
-    }
-    
-    if (liveDataAuth) {
-      intervals.push(setInterval(() => {
-        refetchAccountAuthorities();
-      }, 20000));
-    }
-    
-    if (liveDataRc) {
-      intervals.push(setInterval(() => {
-        refetchRcDelegations();
-      }, 20000));
-    }
-    
-    if (liveDataVesting) {
-      intervals.push(setInterval(() => {
-        refetchVestingDelegations();
-      }, 20000)); 
-    }
-    
-    if (liveDataWitnessVoters) {
-      intervals.push(setInterval(() => {
-        refetchWitnessVoters();
-      }, 20000)); 
-    }
-    
-    if (liveDataWitnessVotesHistory) {
-      intervals.push(setInterval(() => {
-        refetchVotesHistory();
-      }, 20000)); 
-    }
-  
-    return () => {
-      intervals.forEach(clearInterval);
-    };
+    const interval = setInterval(() => {
+      if (liveDataManabars) refetchManabars();
+      if (liveDataDetails) refetchAccountDetails();
+      if (liveDataOperations) refetchAccountOperations();
+      if (liveDataAuth) refetchAccountAuthorities();
+      if (liveDataRc) refetchRcDelegations();
+      if (liveDataVesting) refetchVestingDelegations();
+      if (liveDataWitnessVoters) refetchWitnessVoters();
+      if (liveDataWitnessVotesHistory) refetchVotesHistory();
+    }, config.accountRefreshInterval);
+
+    return () => clearInterval(interval);
   }, [
     liveDataManabars, refetchManabars,
     liveDataDetails, refetchAccountDetails,
