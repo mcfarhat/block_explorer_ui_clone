@@ -10,6 +10,7 @@ import VotesHistoryDialog from "../Witnesses/VotesHistoryDialog";
 import useWitnessDetails from "@/api/common/useWitnessDetails";
 import AccountVestingDelegationsCard from "./AccountVestingDelegationsCard";
 import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
+import AccountBalanceCard from "./AccountBalanceCard";
 import { config } from "@/Config";
 import AccountLiveDataCard from "./AccountLiveDataCard";
 import useHeadBlock from "@/api/homePage/useHeadBlock";
@@ -54,6 +55,10 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
         openVotesHistoryModal={handleOpenVotesHistoryModal}
         isWitnessError={isWitnessDetailsError}
         isWitnessLoading={isWitnessDetailsLoading}
+      />
+      <AccountBalanceCard
+        header="Wallet"
+        userDetails={accountDetails}
       />
       <AccountDetailsCard
         header="Properties"
