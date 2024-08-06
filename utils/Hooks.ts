@@ -272,9 +272,9 @@ const getSyncInfoData = (
   };
 };
 
-export const useBlockchainSyncInfo = (liveUpdate = false, refreshInterval = 3000) => {
+export const useBlockchainSyncInfo = () => {
   const dynamicGlobalQueryData = useDynamicGlobal().dynamicGlobalData;
-  const headBlockNum = useHeadBlockNumber(liveUpdate, refreshInterval).headBlockNumberData;
+  const headBlockNum = useHeadBlockNumber().headBlockNumberData;
   const headBlockData = useHeadBlock(headBlockNum).headBlockData;
 
   const { explorerBlockNumber, hiveBlockNumber, explorerTime, hiveBlockTime } =

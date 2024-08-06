@@ -1,70 +1,102 @@
-import React, { useEffect } from "react";
-import Link from "next/link";
-import { Toggle } from "../ui/toggle";
+import { useState, useEffect } from "react";
 import { Card, CardHeader } from "../ui/card";
-import { useUserSettingsContext } from "../contexts/UserSettingsContext";
-import { useBlockchainSyncInfo } from "@/utils/Hooks"; // Ensure this hook is properly defined
-import { getBlockDifference } from "@/components/home/SyncInfo";
-import { config } from "@/Config";
+import { Toggle } from "../ui/toggle";
+import useManabars from "@/api/accountPage/useManabars";
+import useAccountDetails from "@/api/accountPage/useAccountDetails";
+import useAccountAuthorities from "@/api/accountPage/useAccountAuthorities";
+import useRcDelegations from "@/api/common/useRcDelegations";
+import useVestingDelegations from "@/api/common/useVestingDelegations";
+import useWitnessVoters from "@/api/common/useWitnessVoters";
+import useWitnessVotesHistory from "@/api/common/useWitnessVotesHistory";
+import moment from "moment";
+import { QueryObserverResult } from "@tanstack/react-query";
 import Hive from "@/types/Hive";
+import { config } from "@/Config";
 
-interface CardHeaderProps {
-  blockDetails?: Hive.BlockDetails;
+interface AccountLiveDataProps {
+  accountName: string;
+  liveDataOperations: boolean;
+  setLiveDataOperations: (state: boolean) => void;
+  refetchAccountOperations: QueryObserverResult<Hive.AccountOperationsResponse>["refetch"];
 }
 
-const AccountLiveDataCard: React.FC<CardHeaderProps> = ({ blockDetails }) => {
-  const { settings, setSettings } = useUserSettingsContext();
-  const {
-    explorerBlockNumber,
-    hiveBlockNumber,
-    loading: isLoading,
-  } = useBlockchainSyncInfo(settings.liveData, 20000); // Pass settings.liveData and the interval
-
-  const blockDifference = getBlockDifference(
-    hiveBlockNumber,
-    explorerBlockNumber
+const AccountLiveData: React.FC<AccountLiveDataProps> = ({ 
+    accountName, 
+    liveDataOperations,
+    setLiveDataOperations,
+    refetchAccountOperations }) => {
+  const [liveDataManabars, setLiveDataManabars] = useState(false);
+  const { manabarsData, refetchManabars } = useManabars(accountName);
+  const [liveDataDetails, setLiveDataDetails] = useState(false);
+  const {accountDetails, isAccountDetailsLoading, isAccountDetailsError, notFound, refetchAccountDetails} = useAccountDetails(accountName);
+  const [liveDataAuth, setLiveDataAuth] = useState(false);
+  const {accountAuthoritiesData, accountAuthoritiesDataLoading, accountAuthoritiesDataError, refetchAccountAuthorities} = useAccountAuthorities(accountName);
+  const [liveDataRc, setLiveDataRc] =  useState(false);
+  const {rcDelegationsData, isRcDelegationsLoading, isRcDelegationsError, refetchRcDelegations} = useRcDelegations(accountName, 1000);
+  const [liveDataVesting, setLiveDataVesting] = useState(false);
+  const {vestingDelegationsData, isVestingDelegationsLoading, isVestingDelegationsError, refetchVestingDelegations} = useVestingDelegations(accountName, null, 1000);
+  const [liveDataWitnessVoters, setLiveDataWitnessVoters] = useState(false);
+  const {witnessVoters, isWitnessVotersLoading, isWitnessVotersError, refetchWitnessVoters,} = useWitnessVoters(accountName, false, true, "vests");
+  const [liveDataWitnessVotesHistory, setLiveDataWitnessVotesHistory] = useState(false);
+  const [fromDate, setFromDate] = useState<Date>(
+    moment().subtract(7, "days").toDate()
   );
-
-  const isLiveDataToggleDisabled =
-    blockDifference > config.liveblockSecurityDifference || isLoading;
-
+  const [toDate, setToDate] = useState<Date>(moment().toDate());
+  const {votesHistory, isVotesHistoryLoading, isVotesHistoryError, refetchVotesHistory} = useWitnessVotesHistory(accountName, false, fromDate, toDate);
   useEffect(() => {
     const interval = setInterval(() => {
-      if (settings.liveData) {
-        // Trigger the refetch here
-        setSettings({ ...settings });
-      }
-    }, 20000);
+      if (liveDataManabars) refetchManabars();
+      if (liveDataDetails) refetchAccountDetails();
+      if (liveDataOperations) refetchAccountOperations();
+      if (liveDataAuth) refetchAccountAuthorities();
+      if (liveDataRc) refetchRcDelegations();
+      if (liveDataVesting) refetchVestingDelegations();
+      if (liveDataWitnessVoters) refetchWitnessVoters();
+      if (liveDataWitnessVotesHistory) refetchVotesHistory();
+    }, config.accountRefreshInterval);
 
     return () => clearInterval(interval);
-  }, [settings, setSettings]);
-
+  }, [
+    liveDataManabars, refetchManabars,
+    liveDataDetails, refetchAccountDetails,
+    liveDataOperations, refetchAccountOperations,
+    liveDataAuth, refetchAccountAuthorities,
+    liveDataRc, refetchRcDelegations,
+    liveDataVesting, refetchVestingDelegations,
+    liveDataWitnessVoters, refetchWitnessVoters,
+    liveDataWitnessVotesHistory, refetchVotesHistory
+  ]);
+  
   return (
-    <Card className="col-span-4 md:col-span-1" data-testid="head-block-card">
+    <Card data-testid="account-live-data" className="col-span-4 md:col-span-1">
       <CardHeader>
         <Toggle
-          disabled={isLiveDataToggleDisabled}
-          checked={settings.liveData}
-          onClick={() =>
-            setSettings({
-              ...settings,
-              liveData: !settings.liveData,
-            })
-          }
+          checked={[
+            liveDataManabars, 
+            liveDataDetails, 
+            liveDataOperations, 
+            liveDataAuth,
+            liveDataRc,
+            liveDataVesting,
+            liveDataWitnessVoters,
+            liveDataWitnessVotesHistory
+        ]}
+          onClick={[
+            () => setLiveDataManabars(!liveDataManabars),
+            () => setLiveDataDetails(!liveDataDetails),
+            () => setLiveDataOperations(!liveDataOperations),
+            () => setLiveDataAuth(!liveDataAuth),
+            () => setLiveDataRc(!liveDataRc),
+            () => setLiveDataVesting(!liveDataVesting),
+            () => setLiveDataWitnessVoters(!liveDataWitnessVoters),
+            () => setLiveDataWitnessVotesHistory(!liveDataWitnessVotesHistory)
+        ]}
           className="text-base"
           leftLabel="Live data"
         />
-        <div className="text-explorer-turquoise text-2xl text-left">
-          <Link
-            href={`/block/${blockDetails?.block_num}`} // Adjusted template string syntax
-            data-testid="block-number-link"
-          >
-            Block: {blockDetails?.block_num?.toLocaleString()}
-          </Link>
-        </div>
       </CardHeader>
     </Card>
   );
 };
 
-export default AccountLiveDataCard;
+export default AccountLiveData;
