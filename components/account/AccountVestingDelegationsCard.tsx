@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "../ui/card";
 import { Table, TableBody, TableRow, TableCell } from "../ui/table";
 import { cn } from "@/lib/utils";
 import useVestingDelegations from "@/api/common/useVestingDelegations";
+import { formatNumber } from "@/lib/utils";
 
 type VestingDelegation = {
   delegatee: string;
