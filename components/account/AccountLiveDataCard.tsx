@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardHeader } from "../ui/card";
 import { Toggle } from "../ui/toggle";
 import useManabars from "@/api/accountPage/useManabars";
@@ -8,91 +8,41 @@ import useRcDelegations from "@/api/common/useRcDelegations";
 import useVestingDelegations from "@/api/common/useVestingDelegations";
 import useWitnessVoters from "@/api/common/useWitnessVoters";
 import useWitnessVotesHistory from "@/api/common/useWitnessVotesHistory";
+import useAccountOperations from "@/api/accountPage/useAccountOperations";
 import moment from "moment";
-import { QueryObserverResult } from "@tanstack/react-query";
-import Hive from "@/types/Hive";
 import { config } from "@/Config";
+import { useURLParams } from "@/utils/Hooks";
+import { convertBooleanArrayToIds } from "@/lib/utils";
+import Explorer from "@/types/Explorer";
 
 interface AccountLiveDataProps {
   accountName: string;
-  liveDataOperations: boolean;
-  setLiveDataOperations: (state: boolean) => void;
-  refetchAccountOperations: QueryObserverResult<Hive.AccountOperationsResponse>["refetch"];
+  accountOperationsProps: Explorer.AccountSearchOperationsProps | undefined;
 }
 
-const AccountLiveData: React.FC<AccountLiveDataProps> = ({ 
-    accountName, 
-    liveDataOperations,
-    setLiveDataOperations,
-    refetchAccountOperations }) => {
-  const [liveDataManabars, setLiveDataManabars] = useState(false);
-  const { manabarsData, refetchManabars } = useManabars(accountName);
-  const [liveDataDetails, setLiveDataDetails] = useState(false);
-  const {accountDetails, isAccountDetailsLoading, isAccountDetailsError, notFound, refetchAccountDetails} = useAccountDetails(accountName);
-  const [liveDataAuth, setLiveDataAuth] = useState(false);
-  const {accountAuthoritiesData, accountAuthoritiesDataLoading, accountAuthoritiesDataError, refetchAccountAuthorities} = useAccountAuthorities(accountName);
-  const [liveDataRc, setLiveDataRc] =  useState(false);
-  const {rcDelegationsData, isRcDelegationsLoading, isRcDelegationsError, refetchRcDelegations} = useRcDelegations(accountName, 1000);
-  const [liveDataVesting, setLiveDataVesting] = useState(false);
-  const {vestingDelegationsData, isVestingDelegationsLoading, isVestingDelegationsError, refetchVestingDelegations} = useVestingDelegations(accountName, null, 1000);
-  const [liveDataWitnessVoters, setLiveDataWitnessVoters] = useState(false);
-  const {witnessVoters, isWitnessVotersLoading, isWitnessVotersError, refetchWitnessVoters,} = useWitnessVoters(accountName, false, true, "vests");
-  const [liveDataWitnessVotesHistory, setLiveDataWitnessVotesHistory] = useState(false);
-  const [fromDate, setFromDate] = useState<Date>(
-    moment().subtract(7, "days").toDate()
-  );
-  const [toDate, setToDate] = useState<Date>(moment().toDate());
-  const {votesHistory, isVotesHistoryLoading, isVotesHistoryError, refetchVotesHistory} = useWitnessVotesHistory(accountName, false, fromDate, toDate);
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (liveDataManabars) refetchManabars();
-      if (liveDataDetails) refetchAccountDetails();
-      if (liveDataOperations) refetchAccountOperations();
-      if (liveDataAuth) refetchAccountAuthorities();
-      if (liveDataRc) refetchRcDelegations();
-      if (liveDataVesting) refetchVestingDelegations();
-      if (liveDataWitnessVoters) refetchWitnessVoters();
-      if (liveDataWitnessVotesHistory) refetchVotesHistory();
-    }, config.accountRefreshInterval);
+const AccountLiveData: React.FC<AccountLiveDataProps> = ({ accountName, accountOperationsProps }) => {
+  const [liveDataEnabled, setLiveDataEnabled] = useState(false);
+  const [fromDate] = useState<Date>(moment().subtract(7, "days").toDate());
+  const [toDate] = useState<Date>(moment().toDate());
 
-    return () => clearInterval(interval);
-  }, [
-    liveDataManabars, refetchManabars,
-    liveDataDetails, refetchAccountDetails,
-    liveDataOperations, refetchAccountOperations,
-    liveDataAuth, refetchAccountAuthorities,
-    liveDataRc, refetchRcDelegations,
-    liveDataVesting, refetchVestingDelegations,
-    liveDataWitnessVoters, refetchWitnessVoters,
-    liveDataWitnessVotesHistory, refetchVotesHistory
-  ]);
-  
+
+  useAccountOperations(accountOperationsProps, liveDataEnabled ? config.accountRefreshInterval : false);
+  useManabars(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
+  useAccountDetails(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
+  useAccountAuthorities(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
+  useRcDelegations(accountName, 1000, liveDataEnabled ? config.accountRefreshInterval : false);
+  useVestingDelegations(accountName, null, 1000, liveDataEnabled ? config.accountRefreshInterval : false);
+  useWitnessVoters(accountName, false, true, "vests", liveDataEnabled ? config.accountRefreshInterval : false);
+  useWitnessVotesHistory(accountName, false, fromDate, toDate, liveDataEnabled ? config.accountRefreshInterval : false);
+
   return (
     <Card data-testid="account-live-data" className="col-span-4 md:col-span-1">
       <CardHeader>
         <Toggle
-          checked={[
-            liveDataManabars, 
-            liveDataDetails, 
-            liveDataOperations, 
-            liveDataAuth,
-            liveDataRc,
-            liveDataVesting,
-            liveDataWitnessVoters,
-            liveDataWitnessVotesHistory
-        ]}
-          onClick={[
-            () => setLiveDataManabars(!liveDataManabars),
-            () => setLiveDataDetails(!liveDataDetails),
-            () => setLiveDataOperations(!liveDataOperations),
-            () => setLiveDataAuth(!liveDataAuth),
-            () => setLiveDataRc(!liveDataRc),
-            () => setLiveDataVesting(!liveDataVesting),
-            () => setLiveDataWitnessVoters(!liveDataWitnessVoters),
-            () => setLiveDataWitnessVotesHistory(!liveDataWitnessVotesHistory)
-        ]}
+          checked={liveDataEnabled}
+          onClick={() => setLiveDataEnabled(!liveDataEnabled)}
           className="text-base"
-          leftLabel="Live data"
+          leftLabel="Live Data"
         />
       </CardHeader>
     </Card>

@@ -40,7 +40,7 @@ const VotersDialog: React.FC<VotersDialogProps> = ({
     accountName,
     isVotersOpen,
     isAsc,
-    sortKey
+    sortKey, 
   );
   const changeSorter = (newIsAsc: boolean, newSortKey: string) => {
     const isAscForChange = newSortKey === sortKey ? newIsAsc : false;

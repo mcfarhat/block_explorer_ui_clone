@@ -4,34 +4,40 @@ import Hive from "@/types/Hive";
 import Explorer from "@/types/Explorer";
 
 const useAccountOperations = (
-  accountOperationsProps?: Explorer.AccountSearchOperationsProps
+  accountOperationsProps?: Explorer.AccountSearchOperationsProps,
+  refetchInterval?: number | false,
 ) => {
+  const fetchAccountOperations = async (
+    accountOperationsProps: Explorer.AccountSearchOperationsProps | undefined
+  ) => {
+    if (!accountOperationsProps) return null;
+    console.log("Fetching account operations with props:", accountOperationsProps);
+    return await fetchingService.getOpsByAccount(accountOperationsProps);
+  };
+
   const {
     data: accountOperations,
     isFetching: isAccountOperationsLoading,
     isError: isAccountOperationsError,
-    refetch: refetchAccountOperations,
+    isSuccess,
   }: UseQueryResult<Hive.AccountOperationsResponse> = useQuery({
     queryKey: ["account_operations", accountOperationsProps],
     queryFn: () => fetchAccountOperations(accountOperationsProps),
     refetchOnWindowFocus: false,
+    refetchInterval,
     enabled:
       !!accountOperationsProps?.accountName &&
       !!accountOperationsProps?.accountName.length,
   });
 
-  const fetchAccountOperations = async (
-    accountOperationsProps: Explorer.AccountSearchOperationsProps | undefined
-  ) => {
-    if (!accountOperationsProps) return null;
-    return await fetchingService.getOpsByAccount(accountOperationsProps);
-  };
+  if (isSuccess) {
+    console.log("Refetching data at interval:", refetchInterval);
+  }
 
   return {
     accountOperations,
     isAccountOperationsLoading,
     isAccountOperationsError,
-    refetchAccountOperations,
   };
 };
 
