@@ -4,10 +4,10 @@ import React from "react";
 interface ToggleProps {
   leftLabel?: string;
   rightLabel?: string;
-  checked: boolean | boolean[];
+  checked: boolean;
   className?: string;
   disabled?: boolean;
-  onClick: (() => void | undefined) | (() => void | undefined)[];
+  onClick: (() => void | undefined);
 }
 
 const Toggle: React.FC<ToggleProps> = ({
