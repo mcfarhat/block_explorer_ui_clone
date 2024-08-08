@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import fetchingService from "@/services/FetchingService";
+import Hive from "@/types/Hive";
 
 const useVestingDelegations = (delegatorAccount: string, startAccount: string | null, limit: number, refetchInterval?:number|false) => {
   const {
@@ -10,6 +11,11 @@ const useVestingDelegations = (delegatorAccount: string, startAccount: string | 
     queryKey: ["vestingDelegations", delegatorAccount, startAccount, limit],
     queryFn: () => fetchingService.getVestingDelegations(delegatorAccount, startAccount, limit),
     refetchInterval,
+    select: (data) => {
+      return data.sort((a: Hive.VestingDelegations, b: Hive.VestingDelegations) =>
+        a.delegatee.toLowerCase().localeCompare(b.delegatee.toLowerCase())
+      );
+    },
     refetchOnWindowFocus: false,
   });
 
