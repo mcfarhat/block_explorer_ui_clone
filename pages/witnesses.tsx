@@ -23,7 +23,7 @@ export default function Witnesses() {
   const [voterAccount, setVoterAccount] = useState<string>("");
   const [isVotersOpen, setIsVotersOpen] = useState<boolean>(false);
   const [isVotesHistoryOpen, setIsVotesHistoryOpen] = useState<boolean>(false);
-  const [showInactiveWitnesses, setShowInactiveWitnesses] = useState<boolean>(true);
+  const [hideInactiveWitnesses, setHideInactiveWitnesses] = useState<boolean>(false);
 
   const { witnessesData, isWitnessDataLoading } = useWitnesses(
     config.witnessesPerPages.witnesses
@@ -35,11 +35,11 @@ export default function Witnesses() {
 
   if (!witnessesData || !witnessesData.length) return;
 
-  const filteredWitnessesData = showInactiveWitnesses
-    ? witnessesData
-    : witnessesData.filter(
+  const filteredWitnessesData = hideInactiveWitnesses
+    ? witnessesData.filter(
         (singleWitness: any) => singleWitness.signing_key !== config.inactiveWitnessKey
-      );
+      )
+    : witnessesData;
 
 
   const changeVotersDialogue = (isOpen: boolean) => {
@@ -59,9 +59,9 @@ export default function Witnesses() {
         <div className="flex justify-between items-center mb-4">
           <h1 className="text-xl">Witnesses - Hive Explorer</h1>
           <Toggle
-            leftLabel="Show Inactive Witnesses"
-            checked={showInactiveWitnesses}
-            onClick={() => setShowInactiveWitnesses(!showInactiveWitnesses)}
+            leftLabel="Hide Inactive Witnesses"
+            checked={hideInactiveWitnesses}
+            onClick={() => setHideInactiveWitnesses(!hideInactiveWitnesses)}
             className="ml-4"
           />
         </div>
@@ -94,13 +94,14 @@ export default function Witnesses() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredWitnessesData.map((singleWitness: any, index: number) => (
+          {filteredWitnessesData.map((singleWitness: any, index: number) => (
               <TableRow
                 key={index}
-                className={cn(`${index % 2 === 0 ? "bg-gray-800" : "bg-gray-900"}`,{"line-through": singleWitness.signing_key === config.inactiveWitnessKey})}
+                className={cn(`${index % 2 === 0 ? "bg-gray-800" : "bg-gray-900"}`, {
+                  "line-through": singleWitness.signing_key === config.inactiveWitnessKey,
+                })}
                 data-testid="witnesses-table-row"
-            >
-
+              >
                 <TableCell
                   className={cn("sticky left-0 min-w-[20px]", {
                     "bg-gray-800 md:bg-inherit": index % 2 === 0,
