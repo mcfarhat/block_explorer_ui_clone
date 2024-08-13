@@ -6,6 +6,7 @@ import { Loader2 } from "lucide-react";
 import Explorer from "@/types/Explorer";
 import { formatAndDelocalizeTime } from "@/utils/TimeUtils";
 import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
+import { config } from "@/Config";
 
 interface AccountMainCardProps {
   accountDetails: Explorer.FormattedAccountDetails;

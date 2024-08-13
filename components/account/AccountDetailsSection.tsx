@@ -13,22 +13,15 @@ import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 import AccountBalanceCard from "./AccountBalanceCard";
 import { config } from "@/Config";
 import AccountLiveDataCard from "./AccountLiveDataCard";
-import { QueryObserverResult } from "@tanstack/react-query";
-import Hive from "@/types/Hive";
-
+import Explorer from "@/types/Explorer";
 
 interface AccountDetailsSectionProps {
   accountName: string;
-  liveDataOperations: boolean;
-  setLiveDataOperations: (state: boolean) => void;
-  refetchAccountOperations: QueryObserverResult<Hive.AccountOperationsResponse>["refetch"];
+  accountOperationsProps: Explorer.AccountSearchOperationsProps | undefined;
 }
 
 const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
-  accountName, 
-  liveDataOperations,
-  setLiveDataOperations,
-  refetchAccountOperations
+  accountName, accountOperationsProps
 }) => {
   const { accountDetails } = useAccountDetails(accountName);
   const { witnessDetails, isWitnessDetailsLoading, isWitnessDetailsError } =
@@ -51,10 +44,8 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
   return (
     <>
       <AccountLiveDataCard 
-      accountName = {accountName} 
-      liveDataOperations= {liveDataOperations}
-      setLiveDataOperations={setLiveDataOperations}
-      refetchAccountOperations = {refetchAccountOperations}
+      accountName = {accountName}
+      accountOperationsProps={accountOperationsProps}
       />
       <AccountMainCard
         accountDetails={accountDetails}
