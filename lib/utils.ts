@@ -56,7 +56,7 @@ export const getPageUrlParams = (urlParams: Explorer.UrlParam[]) => {
 export const formatNumber = (
   numberToFormat: number,
   isVest: boolean,
-  skipPrecision: boolean = false,
+  skipPrecision: boolean = false
 ): string => {
   const precision = isVest
     ? config.precisions.vests
