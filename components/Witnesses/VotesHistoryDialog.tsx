@@ -55,7 +55,7 @@ const VotesHistoryDialog: React.FC<VotersDialogProps> = ({
     accountName,
     isVotesHistoryOpen,
     fromDate,
-    toDate
+    toDate,
   );
 
   useEffect(() => {

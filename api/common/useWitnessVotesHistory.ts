@@ -5,7 +5,8 @@ const useWitnessVotesHistory = (
   accountName: string,
   isModalOpen: boolean,
   fromDate: Date,
-  toDate: Date
+  toDate: Date,
+  refetchInterval?: number|false
 ) => {
   const fetchVotesHist = async () =>
     await fetchingService.getWitnessVotesHistory(
@@ -21,7 +22,6 @@ const useWitnessVotesHistory = (
     data: votesHistory,
     isLoading: isVotesHistoryLoading,
     isError: isVotesHistoryError,
-    refetch: refetchVotesHistory, 
   }: any = useQuery({
     queryKey: [
       "witness_votes_history",
@@ -33,9 +33,10 @@ const useWitnessVotesHistory = (
     queryFn: fetchVotesHist,
     enabled: !!accountName && isModalOpen,
     refetchOnWindowFocus: false,
+    refetchInterval,
   });
 
-  return { votesHistory, isVotesHistoryLoading, isVotesHistoryError, refetchVotesHistory };
+  return { votesHistory, isVotesHistoryLoading, isVotesHistoryError };
 };
 
 export default useWitnessVotesHistory;
