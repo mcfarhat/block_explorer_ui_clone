@@ -223,14 +223,14 @@ export default function Account() {
                 className="cursor-pointer"
               />
             </div>
-            <AccountDetailsSection accountName={accountNameFromRoute} accountOperationsProps={accountOperationsProps}/>
+            <AccountDetailsSection accountName={accountNameFromRoute}/>
           </div>
         </>
       );
     } else {
       return (
         <div className="col-start-1 col-span-1 flex flex-col gap-y-2">
-          <AccountDetailsSection accountName={accountNameFromRoute} accountOperationsProps={accountOperationsProps}/>
+          <AccountDetailsSection accountName={accountNameFromRoute}/>
         </div>
       );
     }

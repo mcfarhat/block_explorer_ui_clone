@@ -11,21 +11,19 @@ import useWitnessVotesHistory from "@/api/common/useWitnessVotesHistory";
 import useAccountOperations from "@/api/accountPage/useAccountOperations";
 import moment from "moment";
 import { config } from "@/Config";
-import { useURLParams } from "@/utils/Hooks";
-import { convertBooleanArrayToIds } from "@/lib/utils";
-import Explorer from "@/types/Explorer";
 
 interface AccountLiveDataProps {
   accountName: string;
-  accountOperationsProps: Explorer.AccountSearchOperationsProps | undefined;
 }
 
-const AccountLiveData: React.FC<AccountLiveDataProps> = ({ accountName, accountOperationsProps }) => {
+const AccountLiveData: React.FC<AccountLiveDataProps> = ({ accountName }) => {
   const [liveDataEnabled, setLiveDataEnabled] = useState(false);
   const [fromDate] = useState<Date>(moment().subtract(7, "days").toDate());
   const [toDate] = useState<Date>(moment().toDate());
 
-
+  const accountOperationsProps = {
+    accountName: accountName
+  }
   useAccountOperations(accountOperationsProps, liveDataEnabled ? config.accountRefreshInterval : false);
   useManabars(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
   useAccountDetails(accountName, liveDataEnabled ? config.accountRefreshInterval : false);

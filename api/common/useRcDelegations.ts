@@ -2,7 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import fetchingService from "@/services/FetchingService";
 import Hive from "@/types/Hive";
 
-const useRcDelegations = (delegatorAccount: string, limit: number, refetchInterval?: number|false) => {
+const useRcDelegations = (
+  delegatorAccount: string, 
+  limit: number, 
+  refetchInterval?: number | false
+) => {
   const {
     data: rcDelegationsData,
     isLoading: isRcDelegationsLoading,
@@ -12,15 +16,17 @@ const useRcDelegations = (delegatorAccount: string, limit: number, refetchInterv
     queryFn: () => fetchingService.getRcDelegations(delegatorAccount, limit),
     refetchInterval,
     select: (data) => {
-      return data.sort((a: Hive.RCDelegations, b: Hive.RCDelegations) =>
-        a.to.toLowerCase().localeCompare(b.to.toLowerCase())
-      );
+      if (Array.isArray(data)) {
+        return data.sort((a: Hive.RCDelegations, b: Hive.RCDelegations) =>
+          a.to.toLowerCase().localeCompare(b.to.toLowerCase())
+        );
+      }
+      return data;
     },
     refetchOnWindowFocus: false,
   });
 
-  return { rcDelegationsData, isRcDelegationsLoading, isRcDelegationsError};
+  return { rcDelegationsData, isRcDelegationsLoading, isRcDelegationsError };
 };
-
 
 export default useRcDelegations;

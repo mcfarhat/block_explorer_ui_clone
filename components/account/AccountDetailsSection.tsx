@@ -13,15 +13,13 @@ import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 import AccountBalanceCard from "./AccountBalanceCard";
 import { config } from "@/Config";
 import AccountLiveDataCard from "./AccountLiveDataCard";
-import Explorer from "@/types/Explorer";
 
 interface AccountDetailsSectionProps {
   accountName: string;
-  accountOperationsProps: Explorer.AccountSearchOperationsProps | undefined;
 }
 
 const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
-  accountName, accountOperationsProps
+  accountName
 }) => {
   const { accountDetails } = useAccountDetails(accountName);
   const { witnessDetails, isWitnessDetailsLoading, isWitnessDetailsError } =
@@ -45,7 +43,6 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
     <>
       <AccountLiveDataCard 
       accountName = {accountName}
-      accountOperationsProps={accountOperationsProps}
       />
       <AccountMainCard
         accountDetails={accountDetails}

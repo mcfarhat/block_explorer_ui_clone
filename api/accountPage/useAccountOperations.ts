@@ -18,8 +18,7 @@ const useAccountOperations = (
   const {
     data: accountOperations,
     isFetching: isAccountOperationsLoading,
-    isError: isAccountOperationsError,
-    isSuccess,
+    isError: isAccountOperationsError
   }: UseQueryResult<Hive.AccountOperationsResponse> = useQuery({
     queryKey: ["account_operations", accountOperationsProps],
     queryFn: () => fetchAccountOperations(accountOperationsProps),
@@ -29,10 +28,6 @@ const useAccountOperations = (
       !!accountOperationsProps?.accountName &&
       !!accountOperationsProps?.accountName.length,
   });
-
-  if (isSuccess) {
-    console.log("Refetching data at interval:", refetchInterval);
-  }
 
   return {
     accountOperations,

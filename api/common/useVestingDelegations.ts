@@ -2,7 +2,12 @@ import { useQuery } from "@tanstack/react-query";
 import fetchingService from "@/services/FetchingService";
 import Hive from "@/types/Hive";
 
-const useVestingDelegations = (delegatorAccount: string, startAccount: string | null, limit: number, refetchInterval?:number|false) => {
+const useVestingDelegations = (
+  delegatorAccount: string, 
+  startAccount: string | null, 
+  limit: number, 
+  refetchInterval?: number | false
+) => {
   const {
     data: vestingDelegationsData,
     isLoading: isVestingDelegationsLoading,
@@ -12,9 +17,12 @@ const useVestingDelegations = (delegatorAccount: string, startAccount: string | 
     queryFn: () => fetchingService.getVestingDelegations(delegatorAccount, startAccount, limit),
     refetchInterval,
     select: (data) => {
-      return data.sort((a: Hive.VestingDelegations, b: Hive.VestingDelegations) =>
-        a.delegatee.toLowerCase().localeCompare(b.delegatee.toLowerCase())
-      );
+      if (Array.isArray(data)) {
+        return data.sort((a: Hive.VestingDelegations, b: Hive.VestingDelegations) =>
+          a.delegatee.toLowerCase().localeCompare(b.delegatee.toLowerCase())
+        );
+      }
+      return data;
     },
     refetchOnWindowFocus: false,
   });
