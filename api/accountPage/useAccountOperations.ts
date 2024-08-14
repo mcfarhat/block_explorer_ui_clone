@@ -5,7 +5,6 @@ import Explorer from "@/types/Explorer";
 
 const useAccountOperations = (
   accountOperationsProps?: Explorer.AccountSearchOperationsProps,
-  refetchInterval?: number | false,
 ) => {
   const fetchAccountOperations = async (
     accountOperationsProps: Explorer.AccountSearchOperationsProps | undefined
@@ -18,12 +17,12 @@ const useAccountOperations = (
   const {
     data: accountOperations,
     isFetching: isAccountOperationsLoading,
-    isError: isAccountOperationsError
+    isError: isAccountOperationsError,
+    refetch: refetchAccountOperations
   }: UseQueryResult<Hive.AccountOperationsResponse> = useQuery({
     queryKey: ["account_operations", accountOperationsProps],
     queryFn: () => fetchAccountOperations(accountOperationsProps),
     refetchOnWindowFocus: false,
-    refetchInterval,
     enabled:
       !!accountOperationsProps?.accountName &&
       !!accountOperationsProps?.accountName.length,
@@ -33,6 +32,7 @@ const useAccountOperations = (
     accountOperations,
     isAccountOperationsLoading,
     isAccountOperationsError,
+    refetchAccountOperations
   };
 };
 

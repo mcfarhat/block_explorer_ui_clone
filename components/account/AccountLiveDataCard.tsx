@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader } from "../ui/card";
 import { Toggle } from "../ui/toggle";
 import useManabars from "@/api/accountPage/useManabars";
@@ -8,23 +8,26 @@ import useRcDelegations from "@/api/common/useRcDelegations";
 import useVestingDelegations from "@/api/common/useVestingDelegations";
 import useWitnessVoters from "@/api/common/useWitnessVoters";
 import useWitnessVotesHistory from "@/api/common/useWitnessVotesHistory";
-import useAccountOperations from "@/api/accountPage/useAccountOperations";
 import moment from "moment";
 import { config } from "@/Config";
-
+import Hive from "@/types/Hive"; 
+import { QueryObserverResult } from "@tanstack/react-query";
 interface AccountLiveDataProps {
   accountName: string;
+  refetchAccountOperations: QueryObserverResult<Hive.AccountOperationsResponse>["refetch"];
 }
 
-const AccountLiveData: React.FC<AccountLiveDataProps> = ({ accountName }) => {
+const AccountLiveData: React.FC<AccountLiveDataProps> = ({ accountName, refetchAccountOperations }) => {
   const [liveDataEnabled, setLiveDataEnabled] = useState(false);
   const [fromDate] = useState<Date>(moment().subtract(7, "days").toDate());
   const [toDate] = useState<Date>(moment().toDate());
-
-  const accountOperationsProps = {
-    accountName: accountName
-  }
-  useAccountOperations(accountOperationsProps, liveDataEnabled ? config.accountRefreshInterval : false);
+  useEffect(() => {
+    if (liveDataEnabled) {
+      const interval = setInterval(() => {
+      refetchAccountOperations();}, config.accountRefreshInterval)
+      return () => clearInterval(interval);
+    }
+  }, [liveDataEnabled, refetchAccountOperations]);
   useManabars(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
   useAccountDetails(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
   useAccountAuthorities(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
