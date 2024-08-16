@@ -6,6 +6,7 @@ import {
   MoveVertical,
   MoveUp,
   MoveDown,
+  Link as LinkIcon,
 } from "lucide-react";
 import {
   Table,
@@ -199,13 +200,22 @@ export default function Witnesses() {
 
                   })}
                 >
-                  <Link
-                    href={`/@${singleWitness.witness}`}
-                    data-testid="witness-name"
-                    className={singleWitness.signing_key === "STM1111111111111111111111111111111114T1Anm" ? "line-through" : ""}
-                  >
-                    {singleWitness.witness}
-                  </Link>
+                  <div className="flex justify-between">
+                    <Link
+                      href={`/@${singleWitness.witness}`}
+                      target="_blank"
+                      data-testid="witness-name"
+                    >
+                      {singleWitness.witness}
+                    </Link>
+                    <Link
+                      href={singleWitness.url ?? ""}
+                      target="_blank"
+                      data-testid="witness-link"
+                    >
+                      <LinkIcon size={15} />
+                    </Link>
+                  </div>
                 </TableCell>
                 <TableCell className="text-right">
                   <span className="flex items-center">

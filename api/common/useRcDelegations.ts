@@ -26,7 +26,11 @@ const useRcDelegations = (
     refetchOnWindowFocus: false,
   });
 
-  return { rcDelegationsData, isRcDelegationsLoading, isRcDelegationsError };
+  return {
+    rcDelegationsData,
+    isRcDelegationsLoading,
+    isRcDelegationsError,
+  };
 };
 
 export default useRcDelegations;

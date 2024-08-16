@@ -3,10 +3,9 @@ import fetchingService from "@/services/FetchingService";
 import Hive from "@/types/Hive";
 
 const useVestingDelegations = (
-  delegatorAccount: string, 
-  startAccount: string | null, 
-  limit: number, 
-  refetchInterval?: number | false
+  delegatorAccount: string,
+  startAccount: string | null,
+  limit: number
 ) => {
   const {
     data: vestingDelegationsData,
@@ -14,20 +13,26 @@ const useVestingDelegations = (
     isError: isVestingDelegationsError,
   } = useQuery({
     queryKey: ["vestingDelegations", delegatorAccount, startAccount, limit],
-    queryFn: () => fetchingService.getVestingDelegations(delegatorAccount, startAccount, limit),
-    refetchInterval,
+    queryFn: () =>
+      fetchingService.getVestingDelegations(
+        delegatorAccount,
+        startAccount,
+        limit
+      ),
     select: (data) => {
-      if (Array.isArray(data)) {
-        return data.sort((a: Hive.VestingDelegations, b: Hive.VestingDelegations) =>
+      return data.sort(
+        (a: Hive.VestingDelegations, b: Hive.VestingDelegations) =>
           a.delegatee.toLowerCase().localeCompare(b.delegatee.toLowerCase())
-        );
-      }
-      return data;
+      );
     },
     refetchOnWindowFocus: false,
   });
 
-  return { vestingDelegationsData, isVestingDelegationsLoading, isVestingDelegationsError };
+  return {
+    vestingDelegationsData,
+    isVestingDelegationsLoading,
+    isVestingDelegationsError,
+  };
 };
 
 export default useVestingDelegations;

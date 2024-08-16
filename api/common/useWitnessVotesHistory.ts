@@ -36,7 +36,11 @@ const useWitnessVotesHistory = (
     refetchInterval,
   });
 
-  return { votesHistory, isVotesHistoryLoading, isVotesHistoryError };
+  return {
+    votesHistory,
+    isVotesHistoryLoading,
+    isVotesHistoryError,
+  };
 };
 
 export default useWitnessVotesHistory;
