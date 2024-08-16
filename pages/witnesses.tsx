@@ -206,7 +206,7 @@ export default function Witnesses() {
                   "bg-gray-900 md:bg-inherit": index % 2 !== 0,
                   })}
                 >
-                {index + 1}
+                {singleWitness.rank}
                 </TableCell>
                 <TableCell
                   className={cn("text-explorer-turquoise sticky left-16", {
