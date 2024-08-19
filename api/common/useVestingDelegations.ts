@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import fetchingService from "@/services/FetchingService";
 import Hive from "@/types/Hive";
 
@@ -11,7 +11,7 @@ const useVestingDelegations = (
     data: vestingDelegationsData,
     isLoading: isVestingDelegationsLoading,
     isError: isVestingDelegationsError,
-  } = useQuery({
+  }: UseQueryResult<Hive.VestingDelegations[]> = useQuery({
     queryKey: ["vestingDelegations", delegatorAccount, startAccount, limit],
     queryFn: () =>
       fetchingService.getVestingDelegations(
@@ -19,12 +19,16 @@ const useVestingDelegations = (
         startAccount,
         limit
       ),
+    enabled: !!delegatorAccount,
     select: (data) => {
-      return data.sort(
+    const sortedData = data.sort(
         (a: Hive.VestingDelegations, b: Hive.VestingDelegations) =>
           a.delegatee.toLowerCase().localeCompare(b.delegatee.toLowerCase())
       );
+      return sortedData;
+      
     },
+    
     refetchOnWindowFocus: false,
   });
 
