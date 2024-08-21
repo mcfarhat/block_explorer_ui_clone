@@ -26,7 +26,6 @@ const useVestingDelegations = (
           a.delegatee.toLowerCase().localeCompare(b.delegatee.toLowerCase())
       );
       return sortedData;
-      
     },
     
     refetchOnWindowFocus: false,

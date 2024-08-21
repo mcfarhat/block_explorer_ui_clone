@@ -9,9 +9,8 @@ type ExplorerNodeApi = {
     get_current_price_feed: TWaxApiRequest<{}, Hive.PriceFeed>
     list_vesting_delegations: TWaxApiRequest<{ start: [string, string], limit: number, order: string }, { delegations: Hive.VestingDelegations[] }>
   },
-  condenser_api: {
-    get_vesting_delegations: TWaxApiRequest<[string, string | null, number], any>
-    list_rc_direct_delegations: TWaxApiRequest<[[string, ""], number], any>
+  rc_api: {
+    list_rc_direct_delegations: TWaxApiRequest<{ start: [string, string], limit: number }, { rc_direct_delegations: Hive.RCDelegations[] }>
   }
 }
 
@@ -250,8 +249,12 @@ class FetchingService {
 }
 
   async getRcDelegations (delegatorAccount: string, limit: number): Promise<Hive.RCDelegations[]> {
-    return await this.extendedHiveChain!.api.condenser_api.list_rc_direct_delegations([[delegatorAccount, ""], limit]);
+      return await this.extendedHiveChain!.api.rc_api.list_rc_direct_delegations({
+          start: [delegatorAccount, ""],
+          limit: limit,
+      }).then(response => response.rc_direct_delegations);
   }
+  
 
   async getBlockByTime(date: Date): Promise<number> {
     const requestBody: Hive.GetBlockByTimeProps = {
