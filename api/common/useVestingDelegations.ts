@@ -4,8 +4,7 @@ import Hive from "@/types/Hive";
 
 const useVestingDelegations = (
   delegatorAccount: string,
-  startAccount: string | null,
-  limit: number
+  refetchInterval?: number | false
 ) => {
   const {
     data: vestingDelegationsData,
@@ -17,6 +16,7 @@ const useVestingDelegations = (
       fetchingService.getVestingDelegations(
         delegatorAccount
       ),
+    refetchInterval,
     enabled: !!delegatorAccount,
     select: (data) => {
     const sortedData = data.sort(

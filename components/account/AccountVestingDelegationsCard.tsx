@@ -58,7 +58,7 @@ const AccountVestingDelegationsCard: React.FC<AccountVestingDelegationsCardProps
     vestingDelegationsData,
     isVestingDelegationsLoading,
     isVestingDelegationsError,
-  } = useVestingDelegations(delegatorAccount, startAccount, limit);
+  } = useVestingDelegations(delegatorAccount);
 
   // if (isVestingDelegationsLoading) {
   //   return <div></div>;
