@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import fetchingService from "@/services/FetchingService";
 import Hive from "@/types/Hive";
 
@@ -11,7 +11,7 @@ const useRcDelegations = (
     data: rcDelegationsData,
     isLoading: isRcDelegationsLoading,
     isError: isRcDelegationsError,
-  } = useQuery({
+  }: UseQueryResult<Hive.RCDelegations[]> = useQuery({
     queryKey: ["RcDelegations", delegatorAccount, limit],
     queryFn: () => fetchingService.getRcDelegations(delegatorAccount, limit),
     refetchInterval,

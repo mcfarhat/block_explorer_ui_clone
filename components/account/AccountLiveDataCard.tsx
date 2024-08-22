@@ -32,7 +32,7 @@ const AccountLiveData: React.FC<AccountLiveDataProps> = ({ accountName, refetchA
   useAccountDetails(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
   useAccountAuthorities(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
   useRcDelegations(accountName, 1000, liveDataEnabled ? config.accountRefreshInterval : false);
-  useVestingDelegations(accountName, null, 1000, liveDataEnabled ? config.accountRefreshInterval : false);
+  useVestingDelegations(accountName, liveDataEnabled ? config.accountRefreshInterval : false);
   useWitnessVoters(accountName, false, true, "vests", liveDataEnabled ? config.accountRefreshInterval : false);
   useWitnessVotesHistory(accountName, false, fromDate, toDate, liveDataEnabled ? config.accountRefreshInterval : false);
 
