@@ -18,8 +18,7 @@ type VestingDelegation = {
 
 type AccountVestingDelegationsCardProps = {
   delegatorAccount: string;
-  startAccount: string | null;
-  limit: number;
+  liveDataEnabled: boolean; 
 };
 
 const buildTableBody = (delegations: VestingDelegation[]) => {
@@ -49,16 +48,14 @@ const buildTableBody = (delegations: VestingDelegation[]) => {
   });
 };
 const AccountVestingDelegationsCard: React.FC<AccountVestingDelegationsCardProps> = ({
-  delegatorAccount,
-  startAccount,
-  limit,
+  delegatorAccount, liveDataEnabled,
 }) => {
   const [isPropertiesHidden, setIsPropertiesHidden] = useState(true);
   const {
     vestingDelegationsData,
     isVestingDelegationsLoading,
     isVestingDelegationsError,
-  } = useVestingDelegations(delegatorAccount);
+  } = useVestingDelegations(delegatorAccount, liveDataEnabled);
 
   // if (isVestingDelegationsLoading) {
   //   return <div></div>;

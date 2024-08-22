@@ -174,11 +174,13 @@ export default function Witnesses() {
           accountName={voterAccount}
           isVotersOpen={isVotersOpen}
           changeVotersDialogue={changeVotersDialogue}
+          liveDataEnabled={false}
         />
         <VotesHistoryDialog
           accountName={voterAccount}
           isVotesHistoryOpen={isVotesHistoryOpen}
           changeVoteHistoryDialogue={changeVotesHistoryDialog}
+          liveDataEnabled={false}
         />
         <Table
           className="text-white min-w-[80vw]"

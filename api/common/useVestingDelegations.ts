@@ -1,10 +1,11 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import fetchingService from "@/services/FetchingService";
 import Hive from "@/types/Hive";
+import { config } from "@/Config";
 
 const useVestingDelegations = (
   delegatorAccount: string,
-  refetchInterval?: number | false
+  liveDataEnabled: boolean
 ) => {
   const {
     data: vestingDelegationsData,
@@ -16,7 +17,7 @@ const useVestingDelegations = (
       fetchingService.getVestingDelegations(
         delegatorAccount
       ),
-    refetchInterval,
+    refetchInterval: liveDataEnabled ? config.accountRefreshInterval : false,
     enabled: !!delegatorAccount,
     select: (data) => {
     const sortedData = data.sort(

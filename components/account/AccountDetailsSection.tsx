@@ -12,16 +12,18 @@ import AccountVestingDelegationsCard from "./AccountVestingDelegationsCard";
 import AccountRcDelegationsCard from "./AccountRcDelegationsCard";
 import AccountBalanceCard from "./AccountBalanceCard";
 import { config } from "@/Config";
-import AccountLiveDataCard from "./AccountLiveDataCard";
 import Hive from "@/types/Hive"; 
 import { QueryObserverResult } from "@tanstack/react-query";
+
 interface AccountDetailsSectionProps {
   accountName: string;
-  refetchAccountOperations: QueryObserverResult<Hive.AccountOperationsResponse>["refetch"];
+  refetchAccountOperations: QueryObserverResult<Hive.AccountOperationsResponse>["refetch"]
+  liveDataEnabled: boolean;
+  changeLiveRefresh: () => void;
 }
 
 const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
-  accountName, refetchAccountOperations
+  accountName, refetchAccountOperations, liveDataEnabled, changeLiveRefresh,
 }) => {
   const { accountDetails } = useAccountDetails(accountName);
   const { witnessDetails, isWitnessDetailsLoading, isWitnessDetailsError } =
@@ -43,10 +45,6 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
 
   return (
     <>
-      <AccountLiveDataCard 
-      accountName = {accountName}
-      refetchAccountOperations={refetchAccountOperations}
-      />
       <AccountMainCard
         accountDetails={accountDetails}
         accountName={accountName}
@@ -54,6 +52,8 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
         openVotesHistoryModal={handleOpenVotesHistoryModal}
         isWitnessError={isWitnessDetailsError}
         isWitnessLoading={isWitnessDetailsLoading}
+        liveDataEnabled={liveDataEnabled}
+        changeLiveRefresh={changeLiveRefresh}
       />
       <AccountBalanceCard
         header="Wallet"
@@ -73,7 +73,10 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
         json={accountDetails.posting_json_metadata}
         showCollapseButton={true}
       />
-      <AccountAuthoritiesCard accountName={accountName} />
+      <AccountAuthoritiesCard 
+        accountName={accountName} 
+        liveDataEnabled={liveDataEnabled}
+      />
       {!isWitnessDetailsError && (
         <AccountDetailsCard
           header="Witness Properties"
@@ -83,22 +86,24 @@ const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
       <AccountWitnessVotesCard voters={accountDetails.witness_votes} />
       <AccountVestingDelegationsCard
         delegatorAccount={accountName}
-        startAccount={null}
-        limit={config.maxDelegatorsCount}
+        liveDataEnabled={liveDataEnabled}
       />
       <AccountRcDelegationsCard
         delegatorAccount={accountName}
         limit={config.maxDelegatorsCount}
+        liveDataEnabled={liveDataEnabled}
       />
       <VotersDialog
         accountName={accountName}
         isVotersOpen={isVotersModalOpen}
         changeVotersDialogue={handleOpenVotersModal}
+        liveDataEnabled={liveDataEnabled}
       />
       <VotesHistoryDialog
         accountName={accountName}
         isVotesHistoryOpen={isVotesHistoryModalOpen}
         changeVoteHistoryDialogue={handleOpenVotesHistoryModal}
+        liveDataEnabled={liveDataEnabled}
       />
     </>
   );
