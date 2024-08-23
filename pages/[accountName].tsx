@@ -93,7 +93,7 @@ const changeLiveRefresh = () => {
 
   const searchRanges = useSearchRanges();
 
-  const { accountDetails, notFound } = useAccountDetails(accountNameFromRoute);
+  const { accountDetails, notFound } = useAccountDetails(accountNameFromRoute, liveDataEnabled);
   const accountOperationsProps = {
     accountName: accountNameFromRoute,
     operationTypes: filtersParam.length
@@ -106,7 +106,7 @@ const changeLiveRefresh = () => {
     endDate: toDateParam,
   }
   const { accountOperations, isAccountOperationsLoading, refetchAccountOperations } =
-    useAccountOperations(accountOperationsProps);
+    useAccountOperations(accountOperationsProps, liveDataEnabled);
   const { accountOperationTypes } =
   useAccountOperationTypes(accountNameFromRoute);
 

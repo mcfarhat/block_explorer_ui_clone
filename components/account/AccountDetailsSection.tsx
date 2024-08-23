@@ -25,7 +25,7 @@ interface AccountDetailsSectionProps {
 const AccountDetailsSection: React.FC<AccountDetailsSectionProps> = ({
   accountName, refetchAccountOperations, liveDataEnabled, changeLiveRefresh,
 }) => {
-  const { accountDetails } = useAccountDetails(accountName);
+  const { accountDetails } = useAccountDetails(accountName, liveDataEnabled);
   const { witnessDetails, isWitnessDetailsLoading, isWitnessDetailsError } =
     useWitnessDetails(accountName, !!accountDetails?.is_witness);
 

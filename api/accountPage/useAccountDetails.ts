@@ -4,8 +4,9 @@ import Hive from "@/types/Hive";
 import Explorer from "@/types/Explorer";
 import { useHiveChainContext } from "@/contexts/HiveChainContext";
 import { formatAndDelocalizeTime } from "@/utils/TimeUtils";
+import { config } from "@/Config";
 
-const useAccountDetails = (accountName: string, refetchInterval?:number|false) => {
+const useAccountDetails = (accountName: string, liveDataEnabled: boolean) => {
   const { hiveChain } = useHiveChainContext();
 
   const accountDetailsSelector = (
@@ -51,7 +52,7 @@ const useAccountDetails = (accountName: string, refetchInterval?:number|false) =
   }: UseQueryResult<Explorer.FormattedAccountDetails> = useQuery({
     queryKey: ["account_details", accountName],
     queryFn: () => fetchingService.getAccount(accountName),
-    refetchInterval,
+    refetchInterval: liveDataEnabled ? config.accountRefreshInterval : false,
     refetchOnWindowFocus: false,
     select: (data) => accountDetailsSelector(data),
     enabled: !!accountName && !!accountName.length,
