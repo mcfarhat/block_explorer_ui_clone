@@ -40,7 +40,7 @@ const AccountAuthoritiesCard: React.FC<AccountMainCardProps> = ({
     return (
       <>
         <TableRow
-          key={index}
+          key={`${isAccount ? 'account' : 'key'}-${index}-${content}`}
           className={cn({
             "bg-gray-700": index % 2 === 0,
           })}
@@ -99,6 +99,7 @@ const AccountAuthoritiesCard: React.FC<AccountMainCardProps> = ({
               )
             )}
             <TableRow
+              key={`threshold-${title}`}
               className={cn("font-semibold", {
                 "bg-gray-700": shouldMarkThreshold,
               })}
