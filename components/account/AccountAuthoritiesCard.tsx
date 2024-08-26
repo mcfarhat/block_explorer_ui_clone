@@ -10,12 +10,13 @@ import { cn } from "@/lib/utils";
 
 interface AccountMainCardProps {
   accountName: string;
+  liveDataEnabled: boolean;
 }
 
 const AccountAuthoritiesCard: React.FC<AccountMainCardProps> = ({
-  accountName,
+  accountName, liveDataEnabled,
 }) => {
-  const { accountAuthoritiesData } = useAccountAuthorities(accountName);
+  const { accountAuthoritiesData } = useAccountAuthorities(accountName, liveDataEnabled);
 
   const [isPropertiesHidden, setIsPropertiesHidden] = useState<boolean>(true);
 
@@ -39,7 +40,7 @@ const AccountAuthoritiesCard: React.FC<AccountMainCardProps> = ({
     return (
       <>
         <TableRow
-          key={index}
+          key={`${isAccount ? 'account' : 'key'}-${index}-${content}`}
           className={cn({
             "bg-gray-700": index % 2 === 0,
           })}
@@ -98,6 +99,7 @@ const AccountAuthoritiesCard: React.FC<AccountMainCardProps> = ({
               )
             )}
             <TableRow
+              key={`threshold-${title}`}
               className={cn("font-semibold", {
                 "bg-gray-700": shouldMarkThreshold,
               })}

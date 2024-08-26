@@ -1,6 +1,7 @@
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import fetchingService from "@/services/FetchingService";
 import Hive from "@/types/Hive";
+import { config } from "@/Config";
 
 const SORT_ASC = "asc";
 const SORT_DESC = "desc";
@@ -10,7 +11,7 @@ const useWitnessVoters = (
   isModalOpen: boolean,
   isAsc: boolean,
   sortKey: string,
-  refetchInterval?: number|false
+  liveDataEnabled: boolean
 ) => {
   const sortDirection = isAsc ? SORT_ASC : SORT_DESC;
 
@@ -23,7 +24,7 @@ const useWitnessVoters = (
     queryFn: () =>
       fetchingService.getWitnessVoters(accountName, sortKey, sortDirection),
     enabled: !!accountName && isModalOpen,
-    refetchInterval,
+    refetchInterval: liveDataEnabled ? config.accountRefreshInterval : false,
     refetchOnWindowFocus: false,
   });
 

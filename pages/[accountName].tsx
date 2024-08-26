@@ -53,10 +53,16 @@ const defaultSearchParams: AccountSearchParams = {
   filters: [],
 };
 
+
 export default function Account() {
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const accountNameFromRoute = (router.query.accountName as string)?.slice(1);
+  const [liveDataEnabled, setLiveDataEnabled] = useState(false);
+
+const changeLiveRefresh = () => {
+  setLiveDataEnabled((prev) => !prev);
+};
 
   const { paramsState, setParams } = useURLParams(
     {
@@ -87,7 +93,7 @@ export default function Account() {
 
   const searchRanges = useSearchRanges();
 
-  const { accountDetails, notFound } = useAccountDetails(accountNameFromRoute);
+  const { accountDetails, notFound } = useAccountDetails(accountNameFromRoute, liveDataEnabled);
   const accountOperationsProps = {
     accountName: accountNameFromRoute,
     operationTypes: filtersParam.length
@@ -100,7 +106,7 @@ export default function Account() {
     endDate: toDateParam,
   }
   const { accountOperations, isAccountOperationsLoading, refetchAccountOperations } =
-    useAccountOperations(accountOperationsProps);
+    useAccountOperations(accountOperationsProps, liveDataEnabled);
   const { accountOperationTypes } =
   useAccountOperationTypes(accountNameFromRoute);
 
@@ -223,14 +229,16 @@ export default function Account() {
                 className="cursor-pointer"
               />
             </div>
-            <AccountDetailsSection accountName={accountNameFromRoute} refetchAccountOperations={refetchAccountOperations}/>
+            <AccountDetailsSection accountName={accountNameFromRoute} refetchAccountOperations={refetchAccountOperations} liveDataEnabled={liveDataEnabled}
+  changeLiveRefresh={changeLiveRefresh}/>
           </div>
         </>
       );
     } else {
       return (
         <div className="col-start-1 col-span-1 flex flex-col gap-y-2">
-          <AccountDetailsSection accountName={accountNameFromRoute} refetchAccountOperations={refetchAccountOperations}/>
+          <AccountDetailsSection accountName={accountNameFromRoute} refetchAccountOperations={refetchAccountOperations} liveDataEnabled={liveDataEnabled}
+  changeLiveRefresh={changeLiveRefresh}/>
         </div>
       );
     }
